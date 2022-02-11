@@ -2,16 +2,22 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { Main } from "./main";
 import { Battleship } from "./modules";
+import { StoreContext } from "./store/context";
+import { RootStore } from "./store/store";
+
+const store = new RootStore();
 
 const App = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Main />}>
-          <Route index element={<Battleship />} />
-        </Route>
-      </Routes>
-    </Router>
+    <StoreContext.Provider value={store}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Main />}>
+            <Route index element={<Battleship />} />
+          </Route>
+        </Routes>
+      </Router>
+    </StoreContext.Provider>
   );
 };
 

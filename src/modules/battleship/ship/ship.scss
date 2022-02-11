@@ -1,0 +1,30 @@
+.ship-container {
+    display: flex;
+    width: min-content;
+
+    border: 2px black solid;
+
+    box-sizing: border-box;
+}
+
+.ship {
+    display: flex;
+    width: min-content;
+
+    &__deck {
+        width: 40px;
+        height: 40px;
+
+        border: 1px gray solid;
+
+        box-sizing: border-box;
+    }
+}
+
+.ship_horizontal {
+    flex-direction: row;
+}
+
+.ship_vertical {
+    flex-direction: column;
+}
