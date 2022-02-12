@@ -1,9 +1,12 @@
-import "./field-player.scss";
+import { observer } from "mobx-react-lite";
+
 import { useBattleShipStore } from "../hooks";
 
 import { Cell } from "./cell";
 
-export const FieldPlayer = () => {
+import "./field-player.scss";
+
+export const FieldPlayer = observer(() => {
   const { playerGameField } = useBattleShipStore();
 
   return (
@@ -19,4 +22,4 @@ export const FieldPlayer = () => {
       })}
     </div>
   );
-};
+});

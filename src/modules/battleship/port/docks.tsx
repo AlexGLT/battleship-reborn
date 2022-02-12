@@ -9,8 +9,8 @@ export const Docks = observer(() => {
 
   return (
     <div className="port__docks">
-      {shipsInDocks.map(({ id, length, direction, placement }) => (
-        <Ship key={id} id={id} length={length} direction={direction} placement={placement} />)
+      {shipsInDocks.map(({ id, length, direction }) => (
+        <Ship key={id} id={id} length={length} direction={direction} isInDocks={true} />)
       )}
     </div>
   );

@@ -1,10 +1,12 @@
+import { useDrop } from "react-dnd";
 import { observer } from "mobx-react-lite";
 import clsx from "clsx";
 
 import { useBattleShipStore } from "../hooks";
 
-import "./cell.scss";
 import { eventStages } from "../constants";
+
+import "./cell.scss";
 
 interface CellProps {
   classNames?: string;
@@ -13,14 +15,19 @@ interface CellProps {
 }
 
 export const Cell = observer(({ classNames, row, column }: CellProps) => {
-  const { getCell, hoverPlayerGameField } = useBattleShipStore();
+  const { playerGameField, hoverPlayerGameField } = useBattleShipStore();
 
-  const cellState = getCell(row, column);
+  const [, dropRef] = useDrop(() => ({
+    accept: "ship",
+    options: () => {
+      console.log("test");
+    }
+  }));
+
+  const cellState = playerGameField[row][column];
 
   const handleCellDragEnter = () => {
-    setTimeout(() => {
-      hoverPlayerGameField(row, column, eventStages.enter);
-    });
+    hoverPlayerGameField(row, column, eventStages.enter);
   };
 
   const handleCellDragLeave = () => {
@@ -28,14 +35,15 @@ export const Cell = observer(({ classNames, row, column }: CellProps) => {
   };
 
   const styleModifiers = {
-    "cell_candidate-access": cellState.isHovered && cellState.canDrop,
-    "cell_candidate-failure": cellState.isHovered && !cellState.canDrop
+    "cell_candidate-access": cellState.hover.isHovered && cellState.canDrop,
+    "cell_candidate-failure": cellState.hover.isHovered && !cellState.canDrop
   };
 
   return (
     <div
+      ref={dropRef}
       className={clsx("cell", styleModifiers, classNames)}
-      onDragEnterCapture={handleCellDragEnter}
+      onDragEnter={handleCellDragEnter}
       onDragLeave={handleCellDragLeave}
     />
   );

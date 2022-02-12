@@ -1,28 +1,19 @@
-import { locations, shipsId } from "../../constants";
+import { shipId } from "../../typedefs";
 import { Ship } from "../ship";
 
-export const generateShips = () => {
-  const shipDecksCount = [4, 3, 2, 1];
+import { allShipIds } from "../../constants";
 
-  const ships = [];
+export const generateShips = () => {
+  const ships = new Map<shipId, Ship>();
 
   let i: number = 0;
 
-  for (const deckCount of shipDecksCount) {
-    const shipWithThisDeckCount = [];
+  for (const shipId of allShipIds) {
+    ships.set(allShipIds[i], new Ship(allShipIds[i], Number(shipId.split("-")[0])));
 
-    for (let j = 0; j <= 4 - deckCount; j++) {
-      shipWithThisDeckCount.push(new Ship(shipsId[i], deckCount));
-
-      i++;
-    }
-
-    ships.push(shipWithThisDeckCount);
+    i++;
   }
 
-  const flatShipArray = ships.flat();
 
-  flatShipArray[0].placement = locations.pier;
-
-  return flatShipArray;
+  return ships;
 };

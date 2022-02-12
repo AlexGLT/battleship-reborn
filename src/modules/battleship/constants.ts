@@ -3,26 +3,20 @@ export enum directions {
   vertical = "vertical",
 }
 
-export enum locations {
-  pier = "pier",
-  docks = "docks",
-  battlefield = "battlefield"
-}
-
 export enum eventStages {
   enter = "enter",
   exit = "exit"
 }
 
-export const shipsId = [
-  "four-deck-0",
-  "three-deck-0",
-  "three-deck-1",
-  "double-deck-0",
-  "double-deck-1",
-  "double-deck-2",
-  "one-deck-0",
-  "one-deck-1",
-  "one-deck-2",
-  "one-deck-3"
+export const allShipIds = [
+  "4-deck-0",
+  "3-deck-0",
+  "3-deck-1",
+  "2-deck-0",
+  "2-deck-1",
+  "2-deck-2",
+  "1-deck-0",
+  "1-deck-1",
+  "1-deck-2",
+  "1-deck-3"
 ] as const;

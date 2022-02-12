@@ -1,9 +1,9 @@
 import { useBattleShipStore } from "../hooks";
 
-import { shipsId } from "../constants";
+import { shipId } from "../typedefs";
 
 interface DeckProps {
-  shipId: typeof shipsId[number];
+  shipId: shipId;
   deckIndex: number;
 }
 
