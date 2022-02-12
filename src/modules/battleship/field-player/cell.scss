@@ -1,0 +1,11 @@
+.cell {
+    transition: 0.5s;
+
+    &_candidate-access {
+        background-color: #d1e7dd;
+    }
+
+    &_candidate-failure {
+        background-color: #f1aeb5;
+    }
+}

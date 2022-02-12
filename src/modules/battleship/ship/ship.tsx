@@ -1,7 +1,6 @@
 import { useDrag } from "react-dnd";
 
-import { ShipInterface } from "../typedefs";
-import { locations } from "../constants";
+import { directions, locations, shipsId } from "../constants";
 
 import { Deck } from "./deck";
 
@@ -9,7 +8,14 @@ import range from "lodash-es/range";
 
 import "./ship.scss";
 
-export const Ship = ({ id, length, direction, placement }: ShipInterface) => {
+interface ShipProps {
+  id: typeof shipsId[number],
+  length: number,
+  direction: directions,
+  placement: locations
+}
+
+export const Ship = ({ id, length, direction, placement }: ShipProps) => {
   const [{ isDragging }, dragRef] = useDrag({
     type: "Irrelevant, for now",
     canDrag: placement !== locations.docks,

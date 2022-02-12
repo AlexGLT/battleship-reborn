@@ -1,5 +1,7 @@
-import { useBattleShipStore } from "../hooks";
 import { observer } from "mobx-react-lite";
+
+import { useBattleShipStore } from "../hooks";
+
 import { Ship } from "../ship";
 
 export const Pier = observer(() => {

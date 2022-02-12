@@ -1,6 +1,30 @@
 .field-player {
-    width: 400px;
-    height: 400px;
+    display: flex;
+    flex-wrap: wrap;
+
+    $size: 400px;
+
+    width: $size;
+    height: $size;
 
     border: solid 2px black;
+
+    &__row {
+        display: flex;
+
+        box-sizing: border-box;
+    }
+
+    &__cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        width: $size / 10;
+        height: $size / 10;
+
+        border: 1px solid rgba(0, 0, 0, 0.3);
+
+        box-sizing: border-box;
+    }
 }
