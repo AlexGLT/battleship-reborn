@@ -4,8 +4,6 @@ import clsx from "clsx";
 
 import { useBattleShipStore } from "../hooks";
 
-import { eventStages } from "../constants";
-
 import "./cell.scss";
 
 interface CellProps {
@@ -15,7 +13,7 @@ interface CellProps {
 }
 
 export const Cell = observer(({ classNames, row, column }: CellProps) => {
-  const { playerGameField, hoverPlayerGameField } = useBattleShipStore();
+  const { playerGameField } = useBattleShipStore();
 
   const [, dropRef] = useDrop(() => ({
     accept: "ship",
@@ -26,14 +24,6 @@ export const Cell = observer(({ classNames, row, column }: CellProps) => {
 
   const cellState = playerGameField[row][column];
 
-  const handleCellDragEnter = () => {
-    hoverPlayerGameField(row, column, eventStages.enter);
-  };
-
-  const handleCellDragLeave = () => {
-    hoverPlayerGameField(row, column, eventStages.exit);
-  };
-
   const styleModifiers = {
     "cell_candidate-access": cellState.hover.isHovered && cellState.canDrop,
     "cell_candidate-failure": cellState.hover.isHovered && !cellState.canDrop
@@ -43,8 +33,8 @@ export const Cell = observer(({ classNames, row, column }: CellProps) => {
     <div
       ref={dropRef}
       className={clsx("cell", styleModifiers, classNames)}
-      onDragEnter={handleCellDragEnter}
-      onDragLeave={handleCellDragLeave}
+      data-row={row}
+      data-column={column}
     />
   );
 });

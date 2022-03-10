@@ -1,9 +1,12 @@
+import { configure } from "mobx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { Main } from "./main";
 import { Battleship } from "./modules";
 import { StoreContext } from "./store/context";
 import { RootStore } from "./store/store";
+
+configure({ enforceActions: "observed" });
 
 const store = new RootStore();
 
