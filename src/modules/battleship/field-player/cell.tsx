@@ -1,4 +1,4 @@
-import { useDrop } from "react-dnd";
+import { MouseEvent } from "react";
 import { observer } from "mobx-react-lite";
 import clsx from "clsx";
 
@@ -13,28 +13,28 @@ interface CellProps {
 }
 
 export const Cell = observer(({ classNames, row, column }: CellProps) => {
-  const { playerGameField } = useBattleShipStore();
+  const { playerGameField, unDropShip } = useBattleShipStore();
 
-  const [, dropRef] = useDrop(() => ({
-    accept: "ship",
-    options: () => {
-      console.log("test");
-    }
-  }));
-
-  const cellState = playerGameField[row][column];
+  const { isHovered, isBusy, canDrop } = playerGameField[row][column];
 
   const styleModifiers = {
-    "cell_candidate-access": cellState.hover.isHovered && cellState.canDrop,
-    "cell_candidate-failure": cellState.hover.isHovered && !cellState.canDrop
+    "cell_candidate-access": isHovered && canDrop,
+    "cell_candidate-failure": isHovered && !canDrop,
+    "cell_busy": isBusy
+  };
+
+  const handleContextMenu = (event: MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+
+    unDropShip(row, column);
   };
 
   return (
     <div
-      ref={dropRef}
       className={clsx("cell", styleModifiers, classNames)}
       data-row={row}
       data-column={column}
+      onContextMenu={isBusy ? handleContextMenu : () => {}}
     />
   );
 });

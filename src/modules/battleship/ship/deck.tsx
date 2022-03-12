@@ -8,14 +8,14 @@ interface DeckProps {
 }
 
 export const Deck = ({ shipId, deckIndex }: DeckProps) => {
-  const { startShipDragging, stopShipDragging } = useBattleShipStore();
+  const { draggingState: { startDragging, stopDragging } } = useBattleShipStore();
 
   const handleDeckDragStart = () => {
-    startShipDragging(shipId, deckIndex);
+    startDragging(shipId, deckIndex);
   };
 
   const handleDeckDragEnd = () => {
-    stopShipDragging();
+    stopDragging();
   };
 
   return (
