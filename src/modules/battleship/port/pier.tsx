@@ -7,15 +7,11 @@ import { Ship } from "../ship";
 export const Pier = observer(() => {
   const { shipInPier, toggleDirectionShipInPier } = useBattleShipStore();
 
-  const handleDirectionButtonClick = () => {
-    toggleDirectionShipInPier();
-  };
-
-  if (!shipInPier) {
-    return null;
-  }
+  if (!shipInPier) return null;
 
   const { id, length, direction } = shipInPier;
+
+  const handleDirectionButtonClick = () => toggleDirectionShipInPier();
 
   return (
     <div className="port__pier">

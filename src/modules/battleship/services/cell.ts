@@ -12,9 +12,9 @@ export class Cell {
   public canDrop: boolean | null = null;
 
   constructor(index: number) {
-    this.index = index;
-
     makeAutoObservable(this);
+
+    this.index = index;
   }
 
   setHover = (isHovered: boolean, canDrop: boolean | null) => {

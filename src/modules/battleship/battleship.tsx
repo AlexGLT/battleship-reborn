@@ -7,14 +7,12 @@ import { FieldOpponent } from "./field-opponent";
 
 import "./battleship.scss";
 
-export const Battleship = () => {
-  return (
-    <div className="battleship-container">
-      <DndProvider backend={HTML5Backend}>
-        <Port />
-        <FieldPlayer />
-        <FieldOpponent />
-      </DndProvider>
-    </div>
-  );
-};
+export const Battleship = () => (
+  <div className="battleship-container">
+    <DndProvider backend={HTML5Backend}>
+      <Port />
+      <FieldPlayer />
+      <FieldOpponent />
+    </DndProvider>
+  </div>
+);

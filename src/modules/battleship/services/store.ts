@@ -23,7 +23,7 @@ export class BattleShipStore {
   }
 
   public dropShip = () => {
-    const cells = this.draggingState.hoveredCells;
+    const cells = this.draggingState.relevantRelatedCells;
 
     if (cells.length) {
       const shipId = this.draggingState.shipId;

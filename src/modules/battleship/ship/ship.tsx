@@ -11,10 +11,10 @@ import range from "lodash-es/range";
 import "./ship.scss";
 
 interface ShipProps {
-  id: shipId,
-  length: number,
-  direction: directions,
-  isInDocks?: boolean
+  id: shipId;
+  length: number;
+  direction: directions;
+  isInDocks?: boolean;
 }
 
 export const Ship = ({ id, length, direction, isInDocks = false }: ShipProps) => {
@@ -25,14 +25,16 @@ export const Ship = ({ id, length, direction, isInDocks = false }: ShipProps) =>
     collect: (monitor) => ({
       isDragging: monitor.isDragging()
     })
-  });
+  }, [isInDocks]);
 
   const opacity = isDragging ? 0.4 : 1;
 
   return (
     <div className="ship-container" style={{ opacity }}>
       <div ref={dragRef} className={`ship ship_${direction}`} id={id}>
-        {range(length).map((_, index) => <Deck key={index} shipId={id} deckIndex={index} />)}
+        {range(length).map((_, index) => (
+          <Deck key={index} shipId={id} deckIndex={index} isInDocks={isInDocks} />
+        ))}
       </div>
     </div>
   );
