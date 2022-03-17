@@ -83,11 +83,7 @@ export class BattleShipStore {
 
           cell.sideToCells.delete(shipId);
 
-          if (cell.shipId === shipId) {
-            // console.log(rowIndex, columnIndex);
-
-            cell.unbindShip();
-          }
+          if (cell.shipId === shipId) cell.unbindShip();
         }
       }
 

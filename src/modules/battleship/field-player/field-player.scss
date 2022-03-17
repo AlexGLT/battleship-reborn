@@ -2,12 +2,15 @@
     display: flex;
     flex-wrap: wrap;
 
-    $size: 400px;
+    $size: min-content;
 
     width: $size;
     height: $size;
 
     border: solid 2px black;
+    border-spacing: 0;
+
+    box-sizing: border-box;
 
     &__row {
         display: flex;
@@ -20,8 +23,8 @@
         justify-content: center;
         align-items: center;
 
-        width: $size / 10;
-        height: $size / 10;
+        width: 40px;
+        height: 40px;
 
         border: 1px solid rgba(0, 0, 0, 0.3);
 
