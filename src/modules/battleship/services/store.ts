@@ -7,7 +7,7 @@ import { Ship } from "./ship";
 
 import { allShipIds } from "../constants";
 
-import { generateBattleField, generateShips } from "./utils";
+import { cell2Index, generateBattleField, generateShips, index2Cell } from "./utils";
 
 export class BattleShipStore {
   public ships: Map<shipId, Ship> = generateShips();
@@ -22,7 +22,33 @@ export class BattleShipStore {
     this.draggingState = new DraggingState(this);
   }
 
-  public dropShip = () => {
+  private getSideCells = (cells: Array<[number, number]>) => {
+    const sideCellsIndexes = new Set<number>();
+
+    cells.forEach(([row, column]) => {
+      for (let i = -1; i <= 1; i++) {
+        const sideCellRow = row + i;
+
+        if (sideCellRow < 0) continue;
+        if (sideCellRow > 9) break;
+
+        for (let j = -1; j <= 1; j++) {
+          const sideColumnRow = column + j;
+
+          if (sideColumnRow < 0) continue;
+          if (sideColumnRow > 9) break;
+
+          sideCellsIndexes.add(cell2Index(sideCellRow, sideColumnRow));
+        }
+      }
+    });
+
+    cells.forEach(([row, column]) => sideCellsIndexes.delete(cell2Index(row, column)));
+
+    return Array.from(sideCellsIndexes.values()).map((cellIndex) => index2Cell(cellIndex));
+  };
+
+  public dropShip = (hoveredRow: number, hoveredColumn: number) => {
     const cells = this.draggingState.relevantRelatedCells;
 
     if (cells.length) {
@@ -36,23 +62,37 @@ export class BattleShipStore {
           cell.bindShip(shipId);
         });
 
+        this.getSideCells(cells).forEach(([row, column]) => {
+          this.playerGameField[row][column].sideToCells.add(shipId);
+        });
+
         this.shipsInDocksIds = this.shipsInDocksIds.slice(1);
       }
+
+      this.draggingState.unHover([hoveredRow, hoveredColumn]);
     }
   };
 
   public unDropShip = (row: number, column: number) => {
     const { shipId } = this.playerGameField[row][column];
 
-    for (let rowIndex = 0; rowIndex < 10; rowIndex++) {
-      for (let columnIndex = 0; columnIndex < 10; columnIndex++) {
-        if (this.playerGameField[rowIndex][columnIndex].shipId === shipId) {
-          this.playerGameField[rowIndex][columnIndex].unbindShip();
+    if (shipId) {
+      for (let rowIndex = 0; rowIndex < 10; rowIndex++) {
+        for (let columnIndex = 0; columnIndex < 10; columnIndex++) {
+          const cell = this.playerGameField[rowIndex][columnIndex];
+
+          cell.sideToCells.delete(shipId);
+
+          if (cell.shipId === shipId) {
+            // console.log(rowIndex, columnIndex);
+
+            cell.unbindShip();
+          }
         }
       }
-    }
 
-    this.shipsInDocksIds.push(shipId!);
+      this.shipsInDocksIds.push(shipId!);
+    }
   };
 
   public get shipInPier() {

@@ -1,12 +1,20 @@
 .cell {
     transition: 0.5s;
 
-    &_candidate-access {
+    &_hovered-free {
         background-color: #d1e7dd;
+
+        transform: scale(1.175);
     }
 
-    &_candidate-failure {
+    &_hovered-busy {
         background-color: #f1aeb5;
+
+        transform: scale(1.175);
+    }
+
+    &_side {
+        background-color: lighten(lightgrey, 10%);
     }
 
     &_busy {

@@ -3,9 +3,11 @@ export enum directions {
   vertical = "vertical",
 }
 
-export enum eventStages {
-  enter = "enter",
-  exit = "exit"
+export enum cellStatuses {
+  hoveredFree = "hovered-free",
+  hoveredBusy = "hovered-busy",
+  busy = "busy",
+  side = "side"
 }
 
 export const allShipIds = [

@@ -32,7 +32,7 @@ export class DraggingState {
     return ship ? { direction: ship.direction, length: ship.length } : {};
   }
 
-  public getRelatedCells = ([row, column]: [number, number]): { canDrop: boolean | null, relatedCells: Array<[number, number]> } => {
+  public getRelatedCells = ([row, column]: [number, number]): Array<[number, number]> => {
     const { length, direction } = this.shipSpecs;
 
     if (direction && length) {
@@ -40,17 +40,12 @@ export class DraggingState {
         const isHorizontal = direction === directions.horizontal;
         const firstDeckPlace = (isHorizontal ? column : row) - this.deckIndex;
 
-        return {
-          canDrop: firstDeckPlace >= 0 && firstDeckPlace + length - 1 < 10,
-          relatedCells: range(Math.max(firstDeckPlace, 0), Math.min(firstDeckPlace + length, 10))
-            .map((index) => {
-              return isHorizontal ? [row, index] : [index, column];
-            })
-        };
+        return range(Math.max(firstDeckPlace, 0), Math.min(firstDeckPlace + length, 10))
+          .map((index) => isHorizontal ? [row, index] : [index, column]);
       }
     }
 
-    return { canDrop: null, relatedCells: [] };
+    return [];
   };
 
   public get relevantRelatedCells(): Array<[number, number]> {
@@ -68,21 +63,31 @@ export class DraggingState {
   }
 
   public hover = (hoveredCell: [number, number]) => {
-    this.hoveredCell = hoveredCell;
+    const { length } = this.shipSpecs;
 
-    const { canDrop, relatedCells } = this.getRelatedCells(hoveredCell);
+    if (length) {
+      this.hoveredCell = hoveredCell;
 
-    this.canDrop = canDrop;
+      const relatedCells = this.getRelatedCells(hoveredCell);
 
-    relatedCells.forEach(([row, column]) => {
-      this.supervisedCells.set(cell2Index(row, column), hoveredCell);
+      const isCollision = relatedCells.reduce((isCollision, [row, column]) => {
+        const cell = this.shipStore.playerGameField[row][column];
 
-      this.shipStore.playerGameField[row][column].setHover(true, canDrop);
-    });
+        return isCollision || cell.isBusy || !!cell.sideToCells.size;
+      }, false);
+
+      this.canDrop = relatedCells.length === length && !isCollision;
+
+      relatedCells.forEach(([row, column]) => {
+        this.supervisedCells.set(cell2Index(row, column), hoveredCell);
+
+        this.shipStore.playerGameField[row][column].setHover(true, this.canDrop);
+      });
+    }
   };
 
   public unHover = (hoveredCell: [number, number]) => {
-    this.getRelatedCells(hoveredCell).relatedCells.forEach(([row, column]) => {
+    this.getRelatedCells(hoveredCell).forEach(([row, column]) => {
       const [localHoverRow, localHoverColumn] = this.supervisedCells.get(cell2Index(row, column)) || [];
 
       if (localHoverRow !== undefined) {
@@ -99,14 +104,14 @@ export class DraggingState {
     }
   };
 
-  startDragging = (shipId: shipId | null, deckIndex: number) => {
+  public startDragging = (shipId: shipId | null, deckIndex: number) => {
     if (shipId) {
       this.shipId = shipId;
       this.deckIndex = deckIndex;
     }
   };
 
-  stopDragging = () => {
+  public stopDragging = () => {
     this.shipId = null;
     this.deckIndex = null;
     this.hoveredCell = [null, null];

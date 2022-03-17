@@ -18,19 +18,15 @@ interface CellProps {
 export const Cell = observer(({ classNames, row, column }: CellProps) => {
   const { playerGameField, dropShip, unDropShip, draggingState: { hover, unHover } } = useBattleShipStore();
 
-  const { isHovered, isBusy, canDrop } = computed(() => playerGameField[row][column]).get();
+  const { isBusy, status, canDrop } = computed(() => playerGameField[row][column]).get();
 
   const [, dropRef] = useDrop({
     accept: "ship",
     canDrop: () => !!canDrop,
-    drop: () => dropShip()
-  }, [isHovered, isBusy, canDrop]);
-
-  const styleModifiers = {
-    "cell_candidate-access": !isBusy && isHovered && canDrop,
-    "cell_candidate-failure": !isBusy && isHovered && !canDrop,
-    "cell_busy": isBusy
-  };
+    drop: () => {
+      dropShip(row, column);
+    }
+  }, [status, canDrop]);
 
   const handleContextMenu = (event: MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -44,7 +40,7 @@ export const Cell = observer(({ classNames, row, column }: CellProps) => {
   return (
     <div
       ref={dropRef}
-      className={clsx("cell", styleModifiers, classNames)}
+      className={clsx("cell", classNames, { [`cell_${status}`]: status })}
       onContextMenu={isBusy ? handleContextMenu : () => {
       }}
       onDragEnter={handleDragEnter}
