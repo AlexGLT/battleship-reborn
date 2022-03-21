@@ -1,0 +1,32 @@
+@import "../../styles";
+
+.ship {
+    @include box-shadow;
+
+    display: flex;
+
+    width: min-content;
+
+    border: 1px solid black;
+
+    &_horizontal {
+        flex-direction: row;
+    }
+
+    &_vertical {
+        flex-direction: column;
+    }
+
+    &_dragging {
+        opacity: 0;
+    }
+
+    &__deck {
+        width: $deck-size;
+        height: $deck-size;
+
+        border: 1px solid rgba(0, 0, 0, 0.3);
+
+        box-sizing: border-box;
+    }
+}

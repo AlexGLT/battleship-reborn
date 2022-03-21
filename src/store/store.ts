@@ -1,6 +1,5 @@
 import { BattleShipStore } from "../modules/battleship/services/store";
 
-
 export interface RootStoreInterface {
   battleShipStore: BattleShipStore
 }

@@ -3,11 +3,9 @@ import { Pier } from "./pier";
 
 import "./port.scss";
 
-export const Port = () => {
-  return (
-    <div className="port">
-      <Docks />
-      <Pier />
-    </div>
-  );
-};
+export const Port = () => (
+  <div className="port">
+    <Docks />
+    <Pier />
+  </div>
+);

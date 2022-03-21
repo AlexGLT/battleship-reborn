@@ -29,7 +29,7 @@ module.exports = {
   },
   "rules": {
     "linebreak-style": 0,
-    "quotes": ["error", "double"],
+    "quotes": [2, "double"],
     "indent": [2, 2, { SwitchCase: 1 }],
     "object-curly-spacing": [2, "always"],
     "max-len": [1, { "code": 120 }],

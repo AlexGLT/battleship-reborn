@@ -1,23 +1,27 @@
 .cell {
-    transition: 0.5s;
+    transition: 0.4s;
 
-    &_hovered-free {
-        background-color: #d1e7dd;
-
-        transform: scale(1.175);
+    &_hovered {
+        transform: scale(1.2);
     }
 
-    &_hovered-busy {
-        background-color: #f1aeb5;
+    &_hovered-can-drop {
+        background-color: #9ec5fe;
+    }
 
-        transform: scale(1.175);
+    &_hovered-cant-drop {
+        background-color: #ea868f;
+    }
+
+    &_hovered-collision {
+        background-color: #e35d6a;
     }
 
     &_side {
-        background-color: lighten(lightgrey, 10%);
+        background-color: lighten(#cfe2ff, 5%);
     }
 
     &_busy {
-        background-color: #9dc4fd;
+        background-color: #6ea8fe;
     }
 }

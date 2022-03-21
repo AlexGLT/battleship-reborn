@@ -1,13 +1,13 @@
+@import "../styles";
+
 .field-player {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 
-    $size: min-content;
+    width: min-content;
+    height: min-content;
 
-    width: $size;
-    height: $size;
-
-    border: solid 2px black;
+    border: solid 1px black;
     border-spacing: 0;
 
     box-sizing: border-box;
@@ -23,8 +23,8 @@
         justify-content: center;
         align-items: center;
 
-        width: 40px;
-        height: 40px;
+        width: $deck-size;
+        height: $deck-size;
 
         border: 1px solid rgba(0, 0, 0, 0.3);
 

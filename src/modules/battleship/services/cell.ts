@@ -28,12 +28,13 @@ export class Cell {
   };
 
   public get status() {
-    if (this.isHovered && !this.canDrop) return cellStatuses.hoveredBusy;
+    if (this.isHovered && this.isBusy) return cellStatuses.collision;
+    else if (this.isHovered && !this.canDrop) return cellStatuses.hoveredBusy;
     else if (this.isBusy) return cellStatuses.busy;
     else if (this.sideToCells.size) return cellStatuses.side;
     else if (this.isHovered && this.canDrop) return cellStatuses.hoveredFree;
 
-    return "";
+    return undefined;
   }
 
   public bindShip = (shipId: shipId) => {

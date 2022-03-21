@@ -1,22 +1,31 @@
 import { observer } from "mobx-react-lite";
 
-import { useBattleShipStore } from "../hooks";
+import { useAnimationEnd, useBattleShipStore } from "../hooks";
 
-import { Ship } from "../ship";
+import { DraggableShip } from "../components";
+
+import { DirectionButton } from "./direction-button";
 
 export const Pier = observer(() => {
   const { shipInPier, toggleDirectionShipInPier } = useBattleShipStore();
+
+  const { animationState, handleAnimationStart, handleAnimationEnd } = useAnimationEnd(toggleDirectionShipInPier);
 
   if (!shipInPier) return null;
 
   const { id, length, direction } = shipInPier;
 
-  const handleDirectionButtonClick = () => toggleDirectionShipInPier();
+  const conditionalProps = animationState ? {
+    className: "ship_rotated",
+    onAnimationEnd: handleAnimationEnd
+  } : {};
 
   return (
     <div className="port__pier">
-      <Ship id={id} length={length} direction={direction} />
-      <button className="port__direction-button" onClick={handleDirectionButtonClick}>Change direction</button>
+      <div className="port__ship-in-pier-container">
+        <DraggableShip id={id} length={length} direction={direction} {...conditionalProps} />
+      </div>
+      <DirectionButton onClick={handleAnimationStart} />
     </div>
   );
 });

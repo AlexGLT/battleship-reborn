@@ -4,10 +4,11 @@ export enum directions {
 }
 
 export enum cellStatuses {
-  hoveredFree = "hovered-free",
-  hoveredBusy = "hovered-busy",
-  busy = "busy",
-  side = "side"
+  hoveredFree,
+  hoveredBusy,
+  busy,
+  side,
+  collision
 }
 
 export const allShipIds = [

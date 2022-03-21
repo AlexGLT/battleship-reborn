@@ -96,7 +96,13 @@ export class BattleShipStore {
   }
 
   public get shipsInDocks() {
-    return this.shipsInDocksIds.slice(1).map((shipId) => this.ships.get(shipId) as Ship);
+    const unPlacedShipsCount = [0, 0, 0, 0];
+
+    this.shipsInDocksIds.forEach((shipId) => {
+      ++unPlacedShipsCount[(this.ships.get(shipId) as Ship).length - 1];
+    });
+
+    return unPlacedShipsCount;
   }
 
   public toggleDirectionShipInPier = () => {

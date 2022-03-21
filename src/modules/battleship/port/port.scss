@@ -1,13 +1,37 @@
+@import "../styles";
+
 .port {
     display: flex;
 
-    width: 400px;
-
-    padding: 10px;
-    gap: 5px;
+    padding: 1rem;
+    gap: 1rem;
 
     box-sizing: border-box;
     border: solid 2px black;
+
+    &__docks {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+
+        gap: 1rem;
+        padding: 1rem;
+
+        box-sizing: border-box;
+
+        border: solid 2px black;
+
+        .ship {
+            cursor: no-drop;
+        }
+    }
+
+    &__dock-zone {
+        display: flex;
+        align-items: center;
+
+        gap: 1rem;
+    }
 
     &__pier {
         display: flex;
@@ -15,25 +39,86 @@
         justify-content: center;
         align-items: center;
 
-        width: 50%;
+        width: 4 * $deck-size;
 
-        padding: 10px;
+        padding: 1rem;
 
         border: 2px solid black;
+
+        .ship {
+            margin: auto;
+
+            transition: all 0.5s, opacity 0.25s;
+
+            &:hover {
+                @include box-shadow-hover;
+            }
+        }
+
+        .ship_rotated {
+            animation-name: rotation;
+            animation-duration: 0.5s;
+        }
     }
 
-    &__docks {
+    &__ship-in-pier-container {
         display: flex;
-        flex-direction: column;
+        flex-grow: 1;
+        justify-content: center;
+        align-items: center;
+    }
 
-        width: 50%;
+    &__direction-button {
+        @include box-shadow;
 
-        padding: 10px;
+        padding: 0.5rem;
+        margin-top: auto;
 
-        gap: 5px;
+        background-color: white;
 
-        box-sizing: border-box;
+        border: 0;
+        border-radius: 1rem;
 
-        border: solid 2px black;
+        font-size: 1.125rem;
+
+        transition: 0.5s;
+
+        &:hover {
+            @include box-shadow-hover;
+        }
+
+        &:active {
+            transform: scale(1.1);
+        }
+    }
+
+    &__counter-container {
+        @include box-shadow;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        height: 3rem;
+
+        padding: 0.25rem;
+        margin-left: auto;
+
+        border-radius: 0.25rem;
+
+        h1 {
+            margin: 0;
+            padding: 0;
+        }
+    }
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(90deg);
     }
 }
