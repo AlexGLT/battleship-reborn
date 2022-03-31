@@ -1,9 +1,6 @@
 import { useState, useRef, PointerEvent, Dispatch, SetStateAction } from "react";
 
-type position = {
-  x: number | null,
-  y: number | null
-}
+import { position } from "../typedefs";
 
 interface useDragProps {
   onDrop?: (params: { nodeStartPosition: position, nodePosition: position, setNodePosition: Dispatch<SetStateAction<position>> }) => void;

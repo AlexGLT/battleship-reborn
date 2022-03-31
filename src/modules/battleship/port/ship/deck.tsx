@@ -9,11 +9,7 @@ interface DeckProps {
 }
 
 export const Deck = ({ listeners }: DeckProps) => (
-  <div
-    className="ship__deck"
-    onDragStart={undefined}
-    onPointerDown={listeners?.onPointerDown}
-  />
+  <div className="ship__deck" onPointerDown={listeners?.onPointerDown} />
 );
 
 interface DraggingDeckProps {

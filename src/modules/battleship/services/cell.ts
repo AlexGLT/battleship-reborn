@@ -21,7 +21,6 @@ export class Cell {
     this.index = index;
   }
 
-
   public setHover = (isHovered: boolean, canDrop: boolean | null) => {
     this.isHovered = isHovered;
     this.canDrop = canDrop;

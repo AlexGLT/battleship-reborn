@@ -1,5 +1,7 @@
 @import "../styles";
 
+$opacity-over-field: 0.3;
+
 .port {
     display: flex;
 
@@ -76,7 +78,7 @@
         }
 
         .ship_over-field {
-            opacity: 0.3;
+            opacity: $opacity-over-field;
         }
     }
 
@@ -142,17 +144,20 @@
     }
 }
 
-.ship-dragging-enter {
+.ship-transition-enter {
     opacity: 0;
     transform: translateX(-100%);
 }
-.ship-dragging-enter-active {
+.ship-transition-enter-active {
     opacity: 1;
     transform: translateX(0%);
 }
-.ship-dragging-exit {
-    opacity: 1;
+.ship-transition-exit {
+    position: absolute;
+    opacity: $opacity-over-field;
 }
-.ship-dragging-exit-active {
-    opacity: 0;
+.ship-transition-exit-active {
+    position: absolute;
+    opacity: 0 !important;
+    transition: opacity 0.2s;
 }

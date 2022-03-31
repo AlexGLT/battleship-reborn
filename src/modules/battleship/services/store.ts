@@ -49,6 +49,8 @@ export class BattleShipStore {
   };
 
   public dropShip = () => {
+    let success = false;
+
     const [hoveredRow, hoveredColumn] = this.draggingState.hoveredCell;
 
     const cells = this.draggingState.relevantRelatedCells;
@@ -72,15 +74,15 @@ export class BattleShipStore {
           this.shipsInDocksIds = this.shipsInDocksIds.slice(1);
         }
 
-        this.draggingState.unHover([hoveredRow, hoveredColumn]);
-
-        this.draggingState.stopDragging();
-
-        return true;
+        success = true;
       }
+
+      this.draggingState.unHover([hoveredRow, hoveredColumn]);
     }
 
-    return false;
+    this.draggingState.stopDragging();
+
+    return { success };
   };
 
   public unDropShip = (row: number, column: number) => {

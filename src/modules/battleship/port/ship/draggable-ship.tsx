@@ -33,7 +33,7 @@ export const DraggableShip = observer((
 
   const { nodeRef, nodePosition, isDragging, handleOnPointerDown } = useDrag({
     onDrop: ({ setNodePosition, nodeStartPosition }) => {
-      const success = dropShip();
+      const { success } = dropShip();
 
       if (!success) {
         setNodePosition(nodeStartPosition);
@@ -52,16 +52,15 @@ export const DraggableShip = observer((
 
   return (
     <SwitchTransition>
-      <CSSTransition key={id} nodeRef={nodeRef} timeout={{ enter: 500, exit: 0 }} classNames="ship-dragging">
+      <CSSTransition key={id} nodeRef={nodeRef} timeout={{ enter: 500, exit: 100 }} classNames="ship-transition">
         <div
           ref={nodeRef}
           style={{
             left: `${nodePosition.x}px`,
             top: `${nodePosition.y}px`
           }}
-          onDragStart={undefined}
-          onPointerDown={handleOnPointerDown}
           className={shipClassNames}
+          onPointerDown={handleOnPointerDown}
           onAnimationEnd={handleRotateAnimationEnd}
           onTransitionEnd={handleDropFailAnimationEnd}
         >

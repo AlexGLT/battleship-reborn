@@ -49,15 +49,13 @@ export class DraggingState {
   };
 
   public get relevantRelatedCells(): Array<[number, number]> {
-    const [hoverRow, hoverColumn] = this.hoveredCell;
+    const [hoveredCellRow, hoveredCellColumn] = this.hoveredCell;
 
-    if (hoverRow === null || hoverColumn === null) {
-      return [];
-    }
+    if (hoveredCellRow === null || hoveredCellColumn === null) return [];
 
     return Array.from(this.supervisedCells.entries())
-      .filter(([, [localHoverRow, localHoverColumn]]) => {
-        return cell2Index(localHoverRow, localHoverColumn) === cell2Index(hoverRow, hoverColumn);
+      .filter(([, [relatedCellRow, relatedCellColumn]]) => {
+        return cell2Index(relatedCellRow, relatedCellColumn) === cell2Index(hoveredCellRow, hoveredCellColumn);
       })
       .map(([cellIndex]) => index2Cell(cellIndex));
   }
@@ -121,5 +119,6 @@ export class DraggingState {
     this.shipId = null;
     this.deckIndex = null;
     this.hoveredCell = [null, null];
+    this.canDrop = null;
   };
 }
