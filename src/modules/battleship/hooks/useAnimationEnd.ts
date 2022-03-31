@@ -1,11 +1,18 @@
 import { useState, AnimationEvent } from "react";
 
-export const useAnimationEnd = (animationEndCallback: (event?: AnimationEvent) => void) => {
+interface useAnimationEndProps {
+  [animationName: string]: ((event?: AnimationEvent) => void) | undefined;
+}
+
+export const useAnimationEnd = (animationNames: useAnimationEndProps = {}) => {
   const [animationEndState, setAnimationEndState] = useState(false);
 
   const handleAnimationStart = () => setAnimationEndState(true);
+
   const handleAnimationEnd = (event: AnimationEvent) => {
-    animationEndCallback(event);
+    const animationEndCallback = animationNames[event.animationName];
+
+    if (animationEndCallback) animationEndCallback(event);
 
     setAnimationEndState(false);
   };

@@ -9,7 +9,11 @@ import { DirectionButton } from "./direction-button";
 export const Pier = observer(() => {
   const { shipInPier, toggleDirectionShipInPier } = useBattleShipStore();
 
-  const { animationEndState, handleAnimationStart, handleAnimationEnd } = useAnimationEnd(toggleDirectionShipInPier);
+  const {
+    animationEndState,
+    handleAnimationStart,
+    handleAnimationEnd
+  } = useAnimationEnd({ "rotation": toggleDirectionShipInPier });
 
   if (!shipInPier) return null;
 

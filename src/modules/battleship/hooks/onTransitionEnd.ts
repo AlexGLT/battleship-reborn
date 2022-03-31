@@ -1,21 +1,20 @@
-import { TransitionEvent, useState } from "react";
+import { useState, TransitionEvent } from "react";
 
 interface useTransitionEndProps {
-  transitionEndCallback?: (event?: TransitionEvent) => void;
-  transitionPropertyNames?: string[];
+  [transitionPropertyName: string]: ((event?: TransitionEvent) => void) | undefined;
 }
 
-export const useTransitionEnd = ({ transitionEndCallback, transitionPropertyNames = [] }: useTransitionEndProps = {}) => {
+export const useTransitionEnd = (transitionsPropertyNames: useTransitionEndProps = {}) => {
   const [transitionEndState, setTransitionEndState] = useState(false);
 
   const handleTransitionStart = () => setTransitionEndState(true);
 
   const handleTransitionEnd = (event: TransitionEvent) => {
-    if (transitionPropertyNames.includes(event.propertyName)) {
-      if (transitionEndCallback) transitionEndCallback(event);
+    const transitionEndCallback = transitionsPropertyNames[event.propertyName];
 
-      setTransitionEndState(false);
-    }
+    if (transitionEndCallback) transitionEndCallback(event);
+
+    setTransitionEndState(false);
   };
 
   return { transitionEndState, handleTransitionStart, handleTransitionEnd };

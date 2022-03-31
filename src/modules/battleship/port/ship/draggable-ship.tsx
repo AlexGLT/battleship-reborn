@@ -29,7 +29,7 @@ export const DraggableShip = observer((
     transitionEndState: dropFailAnimationState,
     handleTransitionStart,
     handleTransitionEnd: handleDropFailAnimationEnd
-  } = useTransitionEnd({ transitionPropertyNames: ["left", "top"] });
+  } = useTransitionEnd({ "left": undefined, "top": undefined });
 
   const { nodeRef, nodePosition, isDragging, handleOnPointerDown } = useDrag({
     onDrop: ({ setNodePosition, nodeStartPosition }) => {
