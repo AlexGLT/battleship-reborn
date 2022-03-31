@@ -17,10 +17,6 @@
         flex-direction: column;
     }
 
-    &_dragging {
-        opacity: 0;
-    }
-
     &__deck {
         width: $deck-size;
         height: $deck-size;

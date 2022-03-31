@@ -28,7 +28,7 @@ export class Cell {
   };
 
   public get status() {
-    if (this.isHovered && this.isBusy) return cellStatuses.collision;
+    if (this.isHovered && (this.isBusy || this.sideToCells.size)) return cellStatuses.collision;
     else if (this.isHovered && !this.canDrop) return cellStatuses.hoveredBusy;
     else if (this.isBusy) return cellStatuses.busy;
     else if (this.sideToCells.size) return cellStatuses.side;

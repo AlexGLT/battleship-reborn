@@ -1,14 +1,14 @@
 import { useState, AnimationEvent } from "react";
 
-export const useAnimationEnd = (animationEndCallback: (() => void) | ((event: AnimationEvent) => void)) => {
-  const [animationState, setAnimationState] = useState(false);
+export const useAnimationEnd = (animationEndCallback: (event?: AnimationEvent) => void) => {
+  const [animationEndState, setAnimationEndState] = useState(false);
 
-  const handleAnimationStart = () => setAnimationState(true);
+  const handleAnimationStart = () => setAnimationEndState(true);
   const handleAnimationEnd = (event: AnimationEvent) => {
     animationEndCallback(event);
 
-    setAnimationState(false);
+    setAnimationEndState(false);
   };
 
-  return { animationState, handleAnimationStart, handleAnimationEnd };
+  return { animationEndState, handleAnimationStart, handleAnimationEnd };
 };

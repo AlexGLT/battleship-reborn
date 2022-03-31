@@ -48,29 +48,39 @@ export class BattleShipStore {
     return Array.from(sideCellsIndexes.values()).map((cellIndex) => index2Cell(cellIndex));
   };
 
-  public dropShip = (hoveredRow: number, hoveredColumn: number) => {
+  public dropShip = () => {
+    const [hoveredRow, hoveredColumn] = this.draggingState.hoveredCell;
+
     const cells = this.draggingState.relevantRelatedCells;
 
-    if (cells.length) {
-      const shipId = this.draggingState.shipId;
+    if (cells.length && hoveredRow !== null && hoveredColumn !== null) {
+      if (this.draggingState.canDrop) {
+        const shipId = this.draggingState.shipId;
 
-      if (shipId) {
-        cells.forEach(([rowIndex, columnIndex]) => {
-          const cell = this.playerGameField[rowIndex][columnIndex];
+        if (shipId) {
+          cells.forEach(([rowIndex, columnIndex]) => {
+            const cell = this.playerGameField[rowIndex][columnIndex];
 
-          cell.setHover(false, false);
-          cell.bindShip(shipId);
-        });
+            cell.setHover(false, false);
+            cell.bindShip(shipId);
+          });
 
-        this.getSideCells(cells).forEach(([row, column]) => {
-          this.playerGameField[row][column].sideToCells.add(shipId);
-        });
+          this.getSideCells(cells).forEach(([row, column]) => {
+            this.playerGameField[row][column].sideToCells.add(shipId);
+          });
 
-        this.shipsInDocksIds = this.shipsInDocksIds.slice(1);
+          this.shipsInDocksIds = this.shipsInDocksIds.slice(1);
+        }
+
+        this.draggingState.unHover([hoveredRow, hoveredColumn]);
+
+        this.draggingState.stopDragging();
+
+        return true;
       }
-
-      this.draggingState.unHover([hoveredRow, hoveredColumn]);
     }
+
+    return false;
   };
 
   public unDropShip = (row: number, column: number) => {

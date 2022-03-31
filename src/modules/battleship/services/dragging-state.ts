@@ -104,6 +104,12 @@ export class DraggingState {
     }
   };
 
+  public get isOverPlayerField() {
+    const [row, column] = this.hoveredCell;
+
+    return row !== null && column !== null;
+  }
+
   public startDragging = (shipId: shipId | null, deckIndex: number) => {
     if (shipId) {
       this.shipId = shipId;

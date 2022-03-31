@@ -7,7 +7,7 @@ import { Cell } from "./cell";
 import "./field-player.scss";
 
 export const FieldPlayer = observer(() => {
-  const { playerGameField } = useBattleShipStore();
+  const { playerGameField, draggingState: { shipId } } = useBattleShipStore();
 
   return (
     <table className="field-player">
@@ -16,8 +16,14 @@ export const FieldPlayer = observer(() => {
           return (
             <tr className="field-player__row" key={rowIndex}>
               {row.map((cell, columnIndex) => (
-                <Cell classNames="field-player__cell" row={rowIndex} column={columnIndex} key={columnIndex} />)
-              )}
+                <Cell
+                  key={columnIndex}
+                  classNames="field-player__cell"
+                  row={rowIndex}
+                  column={columnIndex}
+                  startDragging={!shipId}
+                />
+              ))}
             </tr>
           );
         })}

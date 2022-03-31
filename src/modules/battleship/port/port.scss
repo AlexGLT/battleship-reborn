@@ -50,6 +50,8 @@
 
             transition: all 0.5s, opacity 0.25s;
 
+            touch-action: none;
+
             &:hover {
                 @include box-shadow-hover;
             }
@@ -58,6 +60,23 @@
         .ship_rotated {
             animation-name: rotation;
             animation-duration: 0.5s;
+        }
+
+        .ship_dragging {
+            position: absolute;
+            z-index: 1;
+
+            pointer-events: none;
+
+            transition: all 0.5s, opacity 0.25s, top 0s, left 0s;
+        }
+
+        .ship_drop-fail {
+            position: absolute;
+        }
+
+        .ship_over-field {
+            opacity: 0.3;
         }
     }
 
@@ -121,4 +140,19 @@
     to {
         transform: rotate(90deg);
     }
+}
+
+.ship-dragging-enter {
+    opacity: 0;
+    transform: translateX(-100%);
+}
+.ship-dragging-enter-active {
+    opacity: 1;
+    transform: translateX(0%);
+}
+.ship-dragging-exit {
+    opacity: 1;
+}
+.ship-dragging-exit-active {
+    opacity: 0;
 }
