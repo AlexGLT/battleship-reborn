@@ -1,4 +1,4 @@
-import { MouseEvent, PointerEvent } from "react";
+import { MouseEvent } from "react";
 import { computed } from "mobx";
 import { observer } from "mobx-react-lite";
 
@@ -14,7 +14,6 @@ interface CellProps {
   classNames?: string;
   row: number;
   column: number;
-  startDragging: boolean;
 }
 
 const getStylesByStatus = (status: cellStatuses | undefined) => {
@@ -39,35 +38,23 @@ export const Cell = observer(({ classNames, row, column }: CellProps) => {
 
   const { isBusy, status } = computed(() => playerGameField[row][column]).get();
 
-  const handleContextMenu = (event: MouseEvent<HTMLDivElement>) => {
+  const handleContextMenu = (event: MouseEvent<HTMLTableCellElement>) => {
     event.preventDefault();
 
     if (isBusy) unDropShip(row, column);
   };
 
-  const handleDragEnter = (event: PointerEvent) => {
-    event.stopPropagation();
+  const handlePointerEnter = () => hover(row, column);
 
-    if (shipId) {
-      hover(row, column);
-    }
-  };
-
-  const handleDragLeave = (event: PointerEvent) => {
-    event.stopPropagation();
-
-    if (shipId) {
-      unHover(row, column);
-    }
-  };
+  const handlePointerLeave = () => unHover(row, column);
 
   return (
     <td
       style={{ pointerEvents: "all" }}
       className={clsx("cell", classNames, getStylesByStatus(status))}
       onContextMenu={handleContextMenu}
-      onPointerEnter={handleDragEnter}
-      onPointerLeave={handleDragLeave}
+      onPointerEnter={shipId ? handlePointerEnter : undefined}
+      onPointerLeave={shipId ? handlePointerLeave : undefined}
     />
   );
 });

@@ -7,10 +7,12 @@ import { Cell } from "./cell";
 import "./field-player.scss";
 
 export const FieldPlayer = observer(() => {
-  const { playerGameField, draggingState: { shipId } } = useBattleShipStore();
+  const { playerGameField, draggingState: { setHoverCell } } = useBattleShipStore();
+
+  const handlePointerLeave = () => setHoverCell(null);
 
   return (
-    <table className="field-player">
+    <table className="field-player" onPointerLeave={handlePointerLeave}>
       <tbody>
         {playerGameField.map((row, rowIndex) => {
           return (
@@ -21,7 +23,6 @@ export const FieldPlayer = observer(() => {
                   classNames="field-player__cell"
                   row={rowIndex}
                   column={columnIndex}
-                  startDragging={!shipId}
                 />
               ))}
             </tr>

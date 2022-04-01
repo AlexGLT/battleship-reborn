@@ -1,19 +1,17 @@
-import { shipId } from "../../typedefs";
 import { Ship } from "../ship";
 
-import { allShipIds } from "../../constants";
+import { shipLengthsAndCounts } from "../../constants";
 
 export const generateShips = () => {
-  const ships = new Map<shipId, Ship>();
+  const ships = new Map<string, Ship>();
 
-  let i: number = 0;
+  for (const [shipLength, shipsCount] of Array.from(Object.entries(shipLengthsAndCounts)).reverse()) {
+    for (let i = 0; i < shipsCount; i++) {
+      const shipId = `${shipLength}-deck-${i}`;
 
-  for (const shipId of allShipIds) {
-    ships.set(allShipIds[i], new Ship(allShipIds[i], Number(shipId.split("-")[0])));
-
-    i++;
+      ships.set(shipId, new Ship(shipId, +shipLength));
+    }
   }
-
 
   return ships;
 };

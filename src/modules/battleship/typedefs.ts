@@ -1,7 +1,3 @@
-import { allShipIds } from "./constants";
-
-export type shipId = typeof allShipIds[number];
-
 export class Position {
   public x: number;
   public y: number;

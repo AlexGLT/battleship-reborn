@@ -4,8 +4,6 @@ import { observer } from "mobx-react-lite";
 
 import { useBattleShipStore, useDrag, useTransitionEnd } from "../../hooks";
 
-import { shipId } from "../../typedefs";
-
 import { directions } from "../../constants";
 
 import clsx from "clsx";
@@ -14,7 +12,7 @@ import range from "lodash-es/range";
 import { DraggableDeck } from "./deck";
 
 interface DraggingShipProps {
-  id: shipId;
+  id: string;
   length: number;
   direction: directions;
   rotateAnimationState: boolean;

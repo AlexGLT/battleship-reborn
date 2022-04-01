@@ -1,7 +1,5 @@
 import { useBattleShipStore } from "../../hooks";
 
-import { shipId } from "../../typedefs";
-
 interface DeckProps {
   listeners?: {
     onPointerDown?: () => void
@@ -14,7 +12,7 @@ export const Deck = ({ listeners }: DeckProps) => (
 
 interface DraggingDeckProps {
   deckIndex: number;
-  shipId: shipId;
+  shipId: string;
 }
 
 export const DraggableDeck = ({ shipId, deckIndex }: DraggingDeckProps) => {

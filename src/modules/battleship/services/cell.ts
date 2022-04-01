@@ -1,24 +1,19 @@
 import { makeAutoObservable } from "mobx";
 
-import { shipId } from "../typedefs";
-
 import { cellStatuses } from "../constants";
 
 export class Cell {
-  public index: number;
-  public shipId: shipId | null = null;
+  public shipId: string | null = null;
   public isShot: boolean = false;
   public isBusy: boolean = false;
   public isHovered: boolean = false;
 
-  public sideToCells: Set<shipId> = new Set<shipId>();
+  public sideToCells: Set<string> = new Set<string>();
 
   public canDrop: boolean | null = null;
 
-  constructor(index: number) {
+  constructor() {
     makeAutoObservable(this);
-
-    this.index = index;
   }
 
   public setHover = (isHovered: boolean, canDrop: boolean | null) => {
@@ -36,13 +31,13 @@ export class Cell {
     return undefined;
   }
 
-  public bindShip = (shipId: shipId) => {
+  public bindShip = (shipId: string) => {
     this.shipId = shipId;
     this.isBusy = true;
     this.canDrop = null;
   };
 
-  unbindShip = () => {
+  public unbindShip = () => {
     this.shipId = null;
     this.isBusy = false;
   };

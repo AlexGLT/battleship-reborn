@@ -5,15 +5,15 @@ import { useBattleShipStore } from "../hooks";
 import { Ship } from "./ship";
 
 export const Docks = observer(() => {
-  const { shipsInDocks } = useBattleShipStore();
+  const { shipsInDocksCount } = useBattleShipStore();
 
   return (
     <div className="port__docks">
-      {[...shipsInDocks].reverse().map((count, index) => (
-        <div key={index} className="port__dock-zone">
-          <Ship length={4 - index} />
+      {Object.entries(shipsInDocksCount).reverse().map(([shipLength, remainingShipsCount]) => (
+        <div key={shipLength} className="port__dock-zone">
+          <Ship length={+shipLength} />
           <div className="port__counter-container">
-            <h1>{`x${count}`}</h1>
+            <h1>{`x${remainingShipsCount}`}</h1>
           </div>
         </div>
       ))}

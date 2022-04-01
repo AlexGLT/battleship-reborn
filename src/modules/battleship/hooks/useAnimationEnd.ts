@@ -10,11 +10,13 @@ export const useAnimationEnd = (animationNames: useAnimationEndProps = {}) => {
   const handleAnimationStart = () => setAnimationEndState(true);
 
   const handleAnimationEnd = (event: AnimationEvent) => {
-    const animationEndCallback = animationNames[event.animationName];
+    const animationName = event.animationName;
 
-    if (animationEndCallback) animationEndCallback(event);
+    if (animationName in animationNames) {
+      animationNames[animationName]?.(event);
 
-    setAnimationEndState(false);
+      setAnimationEndState(false);
+    }
   };
 
   return { animationEndState, handleAnimationStart, handleAnimationEnd };

@@ -11,15 +11,14 @@ export enum cellStatuses {
   collision
 }
 
-export const allShipIds = [
-  "4-deck-0",
-  "3-deck-0",
-  "3-deck-1",
-  "2-deck-0",
-  "2-deck-1",
-  "2-deck-2",
-  "1-deck-0",
-  "1-deck-1",
-  "1-deck-2",
-  "1-deck-3"
-] as const;
+export const shipLengthsAndCounts = {
+  4: 1,
+  3: 2,
+  2: 3,
+  1: 4
+};
+
+export const fieldSize = {
+  width: 10,
+  height: 10
+};

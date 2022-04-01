@@ -1,12 +1,12 @@
 import { useState, useRef, PointerEvent, Dispatch, SetStateAction } from "react";
 
-import { CellPosition } from "../typedefs";
+import { Position } from "../typedefs";
 
 interface useDragProps {
   onDrop?: (params: {
-    nodeStartPosition: CellPosition | null,
-    nodePosition: CellPosition | null,
-    setNodePosition: Dispatch<SetStateAction<CellPosition | null>>
+    nodeStartPosition: Position | null,
+    nodePosition: Position | null,
+    setNodePosition: Dispatch<SetStateAction<Position | null>>
   }) => void;
 }
 
@@ -15,8 +15,8 @@ export const useDrag = ({ onDrop }: useDragProps) => {
 
   const [isDragging, setIsDragging] = useState(false);
 
-  const nodeStartPosition = useRef<CellPosition | null>(null);
-  const [nodePosition, setNodePosition] = useState<CellPosition | null>(null);
+  const nodeStartPosition = useRef<Position | null>(null);
+  const [nodePosition, setNodePosition] = useState<Position | null>(null);
 
   const handleOnPointerDown = (downEvent: PointerEvent<any>) => {
     const { clientX: downEventX, clientY: downEventY, target, pointerId } = downEvent;
@@ -28,14 +28,14 @@ export const useDrag = ({ onDrop }: useDragProps) => {
       setIsDragging(true);
 
       const { left: nodeX, top: nodeY } = node.getBoundingClientRect();
-      nodeStartPosition.current = new CellPosition(nodeX, nodeY);
+      nodeStartPosition.current = new Position(nodeX, nodeY);
 
       const shift = { x: downEventX - nodeX, y: downEventY - nodeY };
 
-      setNodePosition(new CellPosition(downEventX - shift.x, downEventY - shift.y));
+      setNodePosition(new Position(downEventX - shift.x, downEventY - shift.y));
 
       const handlePointerMove = ({ clientX: moveEventX, clientY: moveEventY }: globalThis.PointerEvent) => {
-        setNodePosition(new CellPosition(moveEventX - shift.x, moveEventY - shift.y));
+        setNodePosition(new Position(moveEventX - shift.x, moveEventY - shift.y));
       };
 
       const handlePointerUp = () => {

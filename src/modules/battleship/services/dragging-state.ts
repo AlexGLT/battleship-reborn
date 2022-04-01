@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
 
 import { BattleShipStore } from "./store";
-import { shipId, CellPosition } from "../typedefs";
+import { CellPosition } from "../typedefs";
 
 import { directions } from "../constants";
 
@@ -10,7 +10,7 @@ import range from "lodash-es/range";
 export class DraggingState {
   private shipStore: BattleShipStore;
 
-  public shipId: shipId | null = null;
+  public shipId: string | null = null;
   public deckIndex: number | null = null;
 
   public hoveredCell: CellPosition | null = null;
@@ -106,7 +106,7 @@ export class DraggingState {
     return !!this.hoveredCell;
   }
 
-  public startDragging = (shipId: shipId, deckIndex: number) => {
+  public startDragging = (shipId: string, deckIndex: number) => {
     this.shipId = shipId;
     this.deckIndex = deckIndex;
   };

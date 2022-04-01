@@ -10,11 +10,13 @@ export const useTransitionEnd = (transitionsPropertyNames: useTransitionEndProps
   const handleTransitionStart = () => setTransitionEndState(true);
 
   const handleTransitionEnd = (event: TransitionEvent) => {
-    const transitionEndCallback = transitionsPropertyNames[event.propertyName];
+    const propertyName = event.propertyName;
 
-    if (transitionEndCallback) transitionEndCallback(event);
+    if (propertyName in transitionsPropertyNames) {
+      transitionsPropertyNames[propertyName]?.(event);
 
-    setTransitionEndState(false);
+      setTransitionEndState(false);
+    }
   };
 
   return { transitionEndState, handleTransitionStart, handleTransitionEnd };

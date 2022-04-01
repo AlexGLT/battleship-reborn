@@ -1,15 +1,13 @@
 import { makeAutoObservable } from "mobx";
 
-import { shipId } from "../typedefs";
-
 import { directions } from "../constants";
 
 export class Ship {
-  public id: shipId;
+  public id: string;
   public length: number;
   public direction: directions;
 
-  constructor(id: shipId, length: number, direction = directions.horizontal) {
+  constructor(id: string, length: number, direction = directions.horizontal) {
     this.id = id;
     this.length = length;
     this.direction = direction;

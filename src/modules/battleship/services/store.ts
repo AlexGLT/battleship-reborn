@@ -1,17 +1,17 @@
 import { makeAutoObservable } from "mobx";
 
-import { CellPosition, shipId } from "../typedefs";
+import { CellPosition } from "../typedefs";
 import { DraggingState } from "./dragging-state";
 import { Cell } from "./cell";
 import { Ship } from "./ship";
 
-import { allShipIds } from "../constants";
+import { fieldSize, shipLengthsAndCounts } from "../constants";
 
 import { generateBattleField, generateShips } from "./utils";
 
 export class BattleShipStore {
-  public ships: Map<shipId, Ship> = generateShips();
-  public shipsInDocksIds: Array<shipId> = allShipIds.slice(0);
+  public ships: Map<string, Ship>;
+  public shipsInDocksIds: Array<string>;
   public playerGameField: Cell[][] = generateBattleField();
 
   public draggingState: DraggingState;
@@ -20,6 +20,9 @@ export class BattleShipStore {
     makeAutoObservable(this);
 
     this.draggingState = new DraggingState(this);
+
+    this.ships = generateShips();
+    this.shipsInDocksIds = Array.from(this.ships.keys());
   }
 
   private getSideCells = (cells: Array<CellPosition>) => {
@@ -30,13 +33,13 @@ export class BattleShipStore {
         const sideCellX = x + i;
 
         if (sideCellX < 0) continue;
-        if (sideCellX > 9) break;
+        if (sideCellX > fieldSize.width - 1) break;
 
         for (let j = -1; j <= 1; j++) {
           const sideColumnY = y + j;
 
           if (sideColumnY < 0) continue;
-          if (sideColumnY > 9) break;
+          if (sideColumnY > fieldSize.height - 1) break;
 
           sideCellsIndexes.add(CellPosition.position2Index(sideCellX, sideColumnY));
         }
@@ -107,11 +110,17 @@ export class BattleShipStore {
     return this.shipsInDocksIds.length ? this.ships.get(this.shipsInDocksIds[0])! : null;
   }
 
-  public get shipsInDocks() {
-    const unPlacedShipsCount = [0, 0, 0, 0];
+  public get shipsInDocksCount() {
+    const unPlacedShipsCount = Object
+      .keys(shipLengthsAndCounts)
+      .reduce<{ [shipLength: number]: number }>(
+        (acc, shipLength) => ({ ...acc, [shipLength]: 0 }), {}
+      );
 
     this.shipsInDocksIds.forEach((shipId) => {
-      ++unPlacedShipsCount[(this.ships.get(shipId)!).length - 1];
+      const shipLength = this.ships.get(shipId)?.length;
+
+      if (shipLength) ++unPlacedShipsCount[shipLength];
     });
 
     return unPlacedShipsCount;
