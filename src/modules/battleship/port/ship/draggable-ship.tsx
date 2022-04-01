@@ -55,10 +55,10 @@ export const DraggableShip = observer((
       <CSSTransition key={id} nodeRef={nodeRef} timeout={{ enter: 500, exit: 100 }} classNames="ship-transition">
         <div
           ref={nodeRef}
-          style={{
+          style={nodePosition ? {
             left: `${nodePosition.x}px`,
             top: `${nodePosition.y}px`
-          }}
+          } : {}}
           className={shipClassNames}
           onPointerDown={handleOnPointerDown}
           onAnimationEnd={handleRotateAnimationEnd}

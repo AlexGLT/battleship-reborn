@@ -1,13 +1,13 @@
 import { makeAutoObservable } from "mobx";
 
-import { shipId } from "../typedefs";
+import { CellPosition, shipId } from "../typedefs";
 import { DraggingState } from "./dragging-state";
 import { Cell } from "./cell";
 import { Ship } from "./ship";
 
 import { allShipIds } from "../constants";
 
-import { cell2Index, generateBattleField, generateShips, index2Cell } from "./utils";
+import { generateBattleField, generateShips } from "./utils";
 
 export class BattleShipStore {
   public ships: Map<shipId, Ship> = generateShips();
@@ -22,53 +22,53 @@ export class BattleShipStore {
     this.draggingState = new DraggingState(this);
   }
 
-  private getSideCells = (cells: Array<[number, number]>) => {
+  private getSideCells = (cells: Array<CellPosition>) => {
     const sideCellsIndexes = new Set<number>();
 
-    cells.forEach(([row, column]) => {
+    cells.forEach(({ x, y }) => {
       for (let i = -1; i <= 1; i++) {
-        const sideCellRow = row + i;
+        const sideCellX = x + i;
 
-        if (sideCellRow < 0) continue;
-        if (sideCellRow > 9) break;
+        if (sideCellX < 0) continue;
+        if (sideCellX > 9) break;
 
         for (let j = -1; j <= 1; j++) {
-          const sideColumnRow = column + j;
+          const sideColumnY = y + j;
 
-          if (sideColumnRow < 0) continue;
-          if (sideColumnRow > 9) break;
+          if (sideColumnY < 0) continue;
+          if (sideColumnY > 9) break;
 
-          sideCellsIndexes.add(cell2Index(sideCellRow, sideColumnRow));
+          sideCellsIndexes.add(CellPosition.position2Index(sideCellX, sideColumnY));
         }
       }
     });
 
-    cells.forEach(([row, column]) => sideCellsIndexes.delete(cell2Index(row, column)));
+    cells.forEach(({ x, y }) => sideCellsIndexes.delete(CellPosition.position2Index(x, y)));
 
-    return Array.from(sideCellsIndexes.values()).map((cellIndex) => index2Cell(cellIndex));
+    return Array.from(sideCellsIndexes.values()).map((cellIndex) => CellPosition.index2Position(cellIndex));
   };
 
   public dropShip = () => {
     let success = false;
 
-    const [hoveredRow, hoveredColumn] = this.draggingState.hoveredCell;
-
     const cells = this.draggingState.relevantRelatedCells;
 
-    if (cells.length && hoveredRow !== null && hoveredColumn !== null) {
+    if (cells.length && this.draggingState.hoveredCell) {
+      const { x: hoveredCellX, y: hoveredCellY } = this.draggingState.hoveredCell;
+
       if (this.draggingState.canDrop) {
         const shipId = this.draggingState.shipId;
 
         if (shipId) {
-          cells.forEach(([rowIndex, columnIndex]) => {
-            const cell = this.playerGameField[rowIndex][columnIndex];
+          cells.forEach(({ x: cellX, y: cellY }) => {
+            const cell = this.playerGameField[cellX][cellY];
 
             cell.setHover(false, false);
             cell.bindShip(shipId);
           });
 
-          this.getSideCells(cells).forEach(([row, column]) => {
-            this.playerGameField[row][column].sideToCells.add(shipId);
+          this.getSideCells(cells).forEach(({ x: sideCellX, y: sideCellY }) => {
+            this.playerGameField[sideCellX][sideCellY].sideToCells.add(shipId);
           });
 
           this.shipsInDocksIds = this.shipsInDocksIds.slice(1);
@@ -77,7 +77,7 @@ export class BattleShipStore {
         success = true;
       }
 
-      this.draggingState.unHover([hoveredRow, hoveredColumn]);
+      this.draggingState.unHover(hoveredCellX, hoveredCellY);
     }
 
     this.draggingState.stopDragging();
@@ -85,13 +85,13 @@ export class BattleShipStore {
     return { success };
   };
 
-  public unDropShip = (row: number, column: number) => {
-    const { shipId } = this.playerGameField[row][column];
+  public unDropShip = (clickedCellX: number, clickedCellY: number) => {
+    const { shipId } = this.playerGameField[clickedCellX][clickedCellY];
 
     if (shipId) {
-      for (let rowIndex = 0; rowIndex < 10; rowIndex++) {
-        for (let columnIndex = 0; columnIndex < 10; columnIndex++) {
-          const cell = this.playerGameField[rowIndex][columnIndex];
+      for (let cellX = 0; cellX < 10; cellX++) {
+        for (let cellY = 0; cellY < 10; cellY++) {
+          const cell = this.playerGameField[cellX][cellY];
 
           cell.sideToCells.delete(shipId);
 
@@ -99,7 +99,7 @@ export class BattleShipStore {
         }
       }
 
-      this.shipsInDocksIds.push(shipId!);
+      this.shipsInDocksIds.push(shipId);
     }
   };
 
@@ -111,7 +111,7 @@ export class BattleShipStore {
     const unPlacedShipsCount = [0, 0, 0, 0];
 
     this.shipsInDocksIds.forEach((shipId) => {
-      ++unPlacedShipsCount[(this.ships.get(shipId) as Ship).length - 1];
+      ++unPlacedShipsCount[(this.ships.get(shipId)!).length - 1];
     });
 
     return unPlacedShipsCount;

@@ -1,9 +1,13 @@
 import { useState, useRef, PointerEvent, Dispatch, SetStateAction } from "react";
 
-import { position } from "../typedefs";
+import { CellPosition } from "../typedefs";
 
 interface useDragProps {
-  onDrop?: (params: { nodeStartPosition: position, nodePosition: position, setNodePosition: Dispatch<SetStateAction<position>> }) => void;
+  onDrop?: (params: {
+    nodeStartPosition: CellPosition | null,
+    nodePosition: CellPosition | null,
+    setNodePosition: Dispatch<SetStateAction<CellPosition | null>>
+  }) => void;
 }
 
 export const useDrag = ({ onDrop }: useDragProps) => {
@@ -11,12 +15,11 @@ export const useDrag = ({ onDrop }: useDragProps) => {
 
   const [isDragging, setIsDragging] = useState(false);
 
-  const nodeStartPosition = useRef<position>({ x: 0, y: 0 });
-  const [nodePosition, setNodePosition] = useState<position>({ x: 0, y: 0 });
+  const nodeStartPosition = useRef<CellPosition | null>(null);
+  const [nodePosition, setNodePosition] = useState<CellPosition | null>(null);
 
   const handleOnPointerDown = (downEvent: PointerEvent<any>) => {
     const { clientX: downEventX, clientY: downEventY, target, pointerId } = downEvent;
-
     downEvent.preventDefault();
 
     const node = nodeRef.current;
@@ -25,14 +28,14 @@ export const useDrag = ({ onDrop }: useDragProps) => {
       setIsDragging(true);
 
       const { left: nodeX, top: nodeY } = node.getBoundingClientRect();
-      nodeStartPosition.current = { x: nodeX, y: nodeY };
+      nodeStartPosition.current = new CellPosition(nodeX, nodeY);
 
       const shift = { x: downEventX - nodeX, y: downEventY - nodeY };
 
-      setNodePosition({ x: downEventX - shift.x, y: downEventY - shift.y });
+      setNodePosition(new CellPosition(downEventX - shift.x, downEventY - shift.y));
 
       const handlePointerMove = ({ clientX: moveEventX, clientY: moveEventY }: globalThis.PointerEvent) => {
-        setNodePosition({ x: moveEventX - shift.x, y: moveEventY - shift.y });
+        setNodePosition(new CellPosition(moveEventX - shift.x, moveEventY - shift.y));
       };
 
       const handlePointerUp = () => {

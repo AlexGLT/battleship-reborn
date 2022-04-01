@@ -49,7 +49,7 @@ export const Cell = observer(({ classNames, row, column }: CellProps) => {
     event.stopPropagation();
 
     if (shipId) {
-      hover([row, column]);
+      hover(row, column);
     }
   };
 
@@ -57,7 +57,7 @@ export const Cell = observer(({ classNames, row, column }: CellProps) => {
     event.stopPropagation();
 
     if (shipId) {
-      unHover([row, column]);
+      unHover(row, column);
     }
   };
 
