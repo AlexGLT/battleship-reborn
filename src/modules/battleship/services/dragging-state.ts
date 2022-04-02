@@ -3,10 +3,6 @@ import { makeAutoObservable } from "mobx";
 import { BattleShipStore } from "./store";
 import { CellPosition } from "../typedefs";
 
-import { directions } from "../constants";
-
-import range from "lodash-es/range";
-
 export class DraggingState {
   private shipStore: BattleShipStore;
 
@@ -17,89 +13,42 @@ export class DraggingState {
 
   public canDrop: boolean | null = null;
 
-  // [relatedCell, hoveredCell]
-  public supervisedCells: Map<number, number> = new Map<number, number>();
-
   constructor(store: BattleShipStore) {
     makeAutoObservable(this);
 
     this.shipStore = store;
   }
 
-  private get shipSpecs() {
+  public get shipSpecs() {
     const ship = this.shipId ? this.shipStore.ships.get(this.shipId) : null;
 
     return ship ? { direction: ship.direction, length: ship.length } : {};
   }
 
-  public getRelatedCells = (x: number, y: number): Array<CellPosition> => {
-    const { length, direction } = this.shipSpecs;
-
-    if (direction && length && this.deckIndex !== null) {
-      const isHorizontal = direction === directions.horizontal;
-      const firstDeckPlace = (isHorizontal ? y : x) - this.deckIndex;
-
-      return range(Math.max(firstDeckPlace, 0), Math.min(firstDeckPlace + length, 10))
-        .map((axis) => isHorizontal ? new CellPosition(x, axis) : new CellPosition(axis, y));
-    }
-
-    return [];
-  };
-
-  public get relevantRelatedCells(): Array<CellPosition> {
-    if (!this.hoveredCell) return [];
-
-    return Array.from(this.supervisedCells.entries())
-      .filter(([, relatedCellPositionIndex]) => {
-        return relatedCellPositionIndex === this.hoveredCell?.index;
-      })
-      .map(([cellIndex]) => {
-        const { x, y } = CellPosition.index2Position(cellIndex);
-
-        return new CellPosition(x, y);
-      });
-  }
-
-  public setHoverCell = (hoverCell: CellPosition | null) => {
-    this.hoveredCell = hoverCell;
-  };
-
-  public hover = (hoveredCellX: number, hoveredCellY: number) => {
+  public hover = () => {
     const { length } = this.shipSpecs;
 
     if (length) {
-      const hoveredCell = new CellPosition(hoveredCellX, hoveredCellY);
+      const relatedCells = this.shipStore.playerGameFieldState.relevantRelatedCells;
 
-      const relatedCells = this.getRelatedCells(hoveredCellX, hoveredCellY);
-
-      const isCollision = relatedCells.reduce((isCollision, { x: relatedCellX, y: relatedCellY }) => {
-        const cell = this.shipStore.playerGameField[relatedCellX][relatedCellY];
-
-        return isCollision || cell.isBusy || !!cell.sideToCells.size;
-      }, false);
+      const isCollision = this.shipStore.playerGameFieldState.checkCollision(relatedCells);
 
       this.canDrop = relatedCells.length === length && !isCollision;
 
-      relatedCells.forEach((relatedCell) => {
-        this.supervisedCells.set(relatedCell.index, hoveredCell.index);
-
-        this.shipStore.playerGameField[relatedCell.x][relatedCell.y].setHover(true, this.canDrop);
-      });
-
-      this.setHoverCell(hoveredCell);
+      this.shipStore.playerGameFieldState.hoverCells(relatedCells, true, this.canDrop);
     }
   };
 
-  public unHover = (unHoveredCellX: number, unHoveredCellY: number) => {
-    this.getRelatedCells(unHoveredCellX, unHoveredCellY).forEach((relatedCell) => {
-      const relatedHoveredCellIndex = this.supervisedCells.get(relatedCell.index);
+  public unHover = () => {
+    this.shipStore.playerGameFieldState.hoverCells(this.shipStore.playerGameFieldState.relevantRelatedCells, false, null);
+  };
 
-      if (CellPosition.position2Index(unHoveredCellX, unHoveredCellY) === relatedHoveredCellIndex) {
-        this.supervisedCells.delete(relatedCell.index);
+  public setHoverCell = (hoverCell: CellPosition | null) => {
+    if (this.hoveredCell) this.unHover();
 
-        this.shipStore.playerGameField[relatedCell.x][relatedCell.y].setHover(false, null);
-      }
-    });
+    this.hoveredCell = hoverCell;
+
+    if (hoverCell) this.hover();
   };
 
   public get isOverPlayerField() {

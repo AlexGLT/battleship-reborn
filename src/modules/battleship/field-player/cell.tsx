@@ -6,6 +6,8 @@ import { useBattleShipStore } from "../hooks";
 
 import { cellStatuses } from "../constants";
 
+import { CellPosition } from "../typedefs";
+
 import clsx from "clsx";
 
 import "./cell.scss";
@@ -34,9 +36,13 @@ const getStylesByStatus = (status: cellStatuses | undefined) => {
 };
 
 export const Cell = observer(({ classNames, row, column }: CellProps) => {
-  const { playerGameField, unDropShip, draggingState: { shipId, hover, unHover } } = useBattleShipStore();
+  const {
+    playerGameFieldState: { playerField },
+    unDropShip,
+    draggingState: { shipId, setHoverCell }
+  } = useBattleShipStore();
 
-  const { isBusy, status } = computed(() => playerGameField[row][column]).get();
+  const { isBusy, status } = computed(() => playerField[row][column]).get();
 
   const handleContextMenu = (event: MouseEvent<HTMLTableCellElement>) => {
     event.preventDefault();
@@ -44,9 +50,7 @@ export const Cell = observer(({ classNames, row, column }: CellProps) => {
     if (isBusy) unDropShip(row, column);
   };
 
-  const handlePointerEnter = () => hover(row, column);
-
-  const handlePointerLeave = () => unHover(row, column);
+  const handlePointerEnter = () => setHoverCell(new CellPosition(row, column));
 
   return (
     <td
@@ -54,7 +58,6 @@ export const Cell = observer(({ classNames, row, column }: CellProps) => {
       className={clsx("cell", classNames, getStylesByStatus(status))}
       onContextMenu={handleContextMenu}
       onPointerEnter={shipId ? handlePointerEnter : undefined}
-      onPointerLeave={shipId ? handlePointerLeave : undefined}
     />
   );
 });

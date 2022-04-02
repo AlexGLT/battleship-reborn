@@ -7,16 +7,6 @@
 
     width: min-content;
 
-    border: 1px solid black;
-
-    &_horizontal {
-        flex-direction: row;
-    }
-
-    &_vertical {
-        flex-direction: column;
-    }
-
     &__deck {
         width: $deck-size;
         height: $deck-size;
@@ -24,5 +14,39 @@
         border: 1px solid rgba(0, 0, 0, 0.3);
 
         box-sizing: border-box;
+    }
+
+    &_horizontal {
+        flex-direction: row;
+
+        .ship__deck:first-child {
+            border-left: 2px solid black;
+        }
+
+        .ship__deck:last-child {
+            border-right: 2px solid black;
+        }
+
+        .ship__deck {
+            border-top: 2px solid black;
+            border-bottom: 2px solid black;
+        }
+    }
+
+    &_vertical {
+        flex-direction: column;
+
+        .ship__deck:first-child {
+            border-top: 2px solid black;
+        }
+
+        .ship__deck:nth-last-child(1) {
+            border-bottom: 2px solid black;
+        }
+
+        .ship__deck {
+            border-left: 2px solid black;
+            border-right: 2px solid black;
+        }
     }
 }

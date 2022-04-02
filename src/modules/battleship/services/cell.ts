@@ -8,7 +8,7 @@ export class Cell {
   public isBusy: boolean = false;
   public isHovered: boolean = false;
 
-  public sideToCells: Set<string> = new Set<string>();
+  public adjoinedShipsIds: Set<string> = new Set<string>();
 
   public canDrop: boolean | null = null;
 
@@ -22,13 +22,17 @@ export class Cell {
   };
 
   public get status() {
-    if (this.isHovered && (this.isBusy || this.sideToCells.size)) return cellStatuses.collision;
+    if (this.isHovered && (this.isBusy || this.adjoinedShipsIds.size)) return cellStatuses.collision;
     else if (this.isHovered && !this.canDrop) return cellStatuses.hoveredBusy;
     else if (this.isBusy) return cellStatuses.busy;
-    else if (this.sideToCells.size) return cellStatuses.side;
+    else if (this.adjoinedShipsIds.size) return cellStatuses.side;
     else if (this.isHovered && this.canDrop) return cellStatuses.hoveredFree;
 
     return undefined;
+  }
+
+  public setAdjoinedShip(shipId: string, set: boolean) {
+    set ? this.adjoinedShipsIds.add(shipId) : this.adjoinedShipsIds.delete(shipId);
   }
 
   public bindShip = (shipId: string) => {

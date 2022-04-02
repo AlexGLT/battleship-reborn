@@ -11,6 +11,8 @@ import range from "lodash-es/range";
 
 import { DraggableDeck } from "./deck";
 
+import "./ship.scss";
+
 interface DraggingShipProps {
   id: string;
   length: number;
