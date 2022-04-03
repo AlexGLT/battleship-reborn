@@ -7,7 +7,7 @@ import { Cell } from "./cell";
 import "./field-player.scss";
 
 export const FieldPlayer = observer(() => {
-  const { playerGameFieldState: { playerField }, draggingState: { setHoverCell, shipId } } = useBattleShipStore();
+  const { playerFieldState: { playerField }, draggingState: { setHoverCell, shipId } } = useBattleShipStore();
 
   const handlePointerLeave = () => setHoverCell(null);
 

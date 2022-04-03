@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 
-import { directions } from "../constants";
+import { directions } from "../../constants";
 
 export class Ship {
   public id: string;

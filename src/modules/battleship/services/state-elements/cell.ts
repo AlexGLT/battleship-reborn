@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 
-import { cellStatuses } from "../constants";
+import { cellStatuses } from "../../constants";
 
 export class Cell {
   public shipId: string | null = null;

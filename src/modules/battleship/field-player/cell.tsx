@@ -1,5 +1,4 @@
 import { MouseEvent } from "react";
-import { computed } from "mobx";
 import { observer } from "mobx-react-lite";
 
 import { useBattleShipStore } from "../hooks";
@@ -37,24 +36,23 @@ const getStylesByStatus = (status: cellStatuses | undefined) => {
 
 export const Cell = observer(({ classNames, row, column }: CellProps) => {
   const {
-    playerGameFieldState: { playerField },
-    unDropShip,
+    playerFieldState: { getCellState },
+    raiseShip,
     draggingState: { shipId, setHoverCell }
   } = useBattleShipStore();
 
-  const { isBusy, status } = computed(() => playerField[row][column]).get();
+  const { isBusy, status } = getCellState(row, column);
 
   const handleContextMenu = (event: MouseEvent<HTMLTableCellElement>) => {
     event.preventDefault();
 
-    if (isBusy) unDropShip(row, column);
+    if (isBusy) raiseShip(row, column);
   };
 
   const handlePointerEnter = () => setHoverCell(new CellPosition(row, column));
 
   return (
     <td
-      style={{ pointerEvents: "all" }}
       className={clsx("cell", classNames, getStylesByStatus(status))}
       onContextMenu={handleContextMenu}
       onPointerEnter={shipId ? handlePointerEnter : undefined}

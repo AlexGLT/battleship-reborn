@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
 
 import { DraggingState } from "./dragging-state";
-import { Ship } from "./ship";
+import { Ship } from "./state-elements";
 
 import { shipLengthsAndCounts } from "../constants";
 
@@ -9,7 +9,7 @@ import { generateShips } from "./utils";
 import { PlayerFieldState } from "./player-field-state";
 
 export class BattleShipStore {
-  public playerGameFieldState: PlayerFieldState;
+  public playerFieldState: PlayerFieldState;
   public draggingState: DraggingState;
 
   public ships: Map<string, Ship>;
@@ -18,7 +18,7 @@ export class BattleShipStore {
   constructor() {
     makeAutoObservable(this);
 
-    this.playerGameFieldState = new PlayerFieldState(this);
+    this.playerFieldState = new PlayerFieldState(this);
     this.draggingState = new DraggingState(this);
 
     this.ships = generateShips();
@@ -28,14 +28,14 @@ export class BattleShipStore {
   public dropShip = () => {
     let success = false;
 
-    const cells = this.playerGameFieldState.relevantRelatedCells;
+    const cells = this.playerFieldState.relevantRelatedCells;
 
     if (cells.length && this.draggingState.hoveredCell) {
       if (this.draggingState.canDrop) {
         const shipId = this.draggingState.shipId;
 
         if (shipId) {
-          this.playerGameFieldState.placeShip(shipId);
+          this.playerFieldState.placeShip(shipId);
 
           this.shipsInDocksIds = this.shipsInDocksIds.slice(1);
         }
@@ -51,8 +51,8 @@ export class BattleShipStore {
     return { success };
   };
 
-  public unDropShip = (clickedCellX: number, clickedCellY: number) => {
-    const shipId = this.playerGameFieldState.unPlaceShip(clickedCellX, clickedCellY);
+  public raiseShip = (clickedCellX: number, clickedCellY: number) => {
+    const shipId = this.playerFieldState.removeShip(clickedCellX, clickedCellY);
 
     if (shipId) {
       this.shipsInDocksIds.push(shipId);

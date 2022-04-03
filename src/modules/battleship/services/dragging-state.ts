@@ -19,28 +19,35 @@ export class DraggingState {
     this.shipStore = store;
   }
 
+  public get isOverPlayerField() {
+    return !!this.hoveredCell;
+  }
+
   public get shipSpecs() {
     const ship = this.shipId ? this.shipStore.ships.get(this.shipId) : null;
 
     return ship ? { direction: ship.direction, length: ship.length } : {};
   }
 
-  public hover = () => {
+  private hover = () => {
     const { length } = this.shipSpecs;
 
     if (length) {
-      const relatedCells = this.shipStore.playerGameFieldState.relevantRelatedCells;
+      const { relevantSideCells, checkCollision, hoverCells } = this.shipStore.playerFieldState;
 
-      const isCollision = this.shipStore.playerGameFieldState.checkCollision(relatedCells);
+      const isCollision = checkCollision(relevantSideCells);
+      const canDrop = relevantSideCells.length === length && !isCollision;
 
-      this.canDrop = relatedCells.length === length && !isCollision;
+      hoverCells(relevantSideCells, true, this.canDrop);
 
-      this.shipStore.playerGameFieldState.hoverCells(relatedCells, true, this.canDrop);
+      this.canDrop = canDrop;
     }
   };
 
-  public unHover = () => {
-    this.shipStore.playerGameFieldState.hoverCells(this.shipStore.playerGameFieldState.relevantRelatedCells, false, null);
+  private unHover = () => {
+    const { relevantRelatedCells, hoverCells } = this.shipStore.playerFieldState;
+
+    hoverCells(relevantRelatedCells, false, null);
   };
 
   public setHoverCell = (hoverCell: CellPosition | null) => {
@@ -50,10 +57,6 @@ export class DraggingState {
 
     if (hoverCell) this.hover();
   };
-
-  public get isOverPlayerField() {
-    return !!this.hoveredCell;
-  }
 
   public startDragging = (shipId: string, deckIndex: number) => {
     this.shipId = shipId;

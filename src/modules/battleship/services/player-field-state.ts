@@ -2,51 +2,9 @@ import { makeAutoObservable } from "mobx";
 
 import { CellPosition } from "../typedefs";
 import { BattleShipStore } from "./store";
-import { Cell } from "./cell";
+import { Cell } from "./state-elements";
 
-import { directions, fieldSize } from "../constants";
-
-import range from "lodash-es/range";
-import { generateBattleField } from "./utils";
-
-const getRelatedCells = (
-  x: number,
-  y: number,
-  length: number,
-  direction: directions,
-  deckIndex: number): Array<CellPosition> => {
-  const isHorizontal = direction === directions.horizontal;
-  const firstDeckPlace = (isHorizontal ? y : x) - deckIndex;
-
-  return range(Math.max(firstDeckPlace, 0), Math.min(firstDeckPlace + length, 10))
-    .map((axis) => isHorizontal ? new CellPosition(x, axis) : new CellPosition(axis, y));
-};
-
-const getSideCells = (cells: Array<CellPosition>) => {
-  const sideCellsIndexes = new Set<number>();
-
-  cells.forEach(({ x, y }) => {
-    for (let i = -1; i <= 1; i++) {
-      const sideCellX = x + i;
-
-      if (sideCellX < 0) continue;
-      if (sideCellX > fieldSize.width - 1) break;
-
-      for (let j = -1; j <= 1; j++) {
-        const sideColumnY = y + j;
-
-        if (sideColumnY < 0) continue;
-        if (sideColumnY > fieldSize.height - 1) break;
-
-        sideCellsIndexes.add(CellPosition.position2Index(sideCellX, sideColumnY));
-      }
-    }
-  });
-
-  cells.forEach(({ x, y }) => sideCellsIndexes.delete(CellPosition.position2Index(x, y)));
-
-  return Array.from(sideCellsIndexes.values()).map((cellIndex) => new CellPosition(cellIndex));
-};
+import { generateBattleField, getRelatedCells, getSideCells } from "./utils";
 
 export class PlayerFieldState {
   private battleShipStore: BattleShipStore;
@@ -75,6 +33,8 @@ export class PlayerFieldState {
     return relatedCells.length ? getSideCells(relatedCells) : [];
   }
 
+  public getCellState = (cellX: number, cellY: number) => this.playerField[cellX][cellY];
+
   public checkCollision = (relatedCells: Array<CellPosition>) => {
     return relatedCells.reduce((isCollision, { x: relatedCellX, y: relatedCellY }) => {
       const cell = this.playerField[relatedCellX][relatedCellY];
@@ -96,13 +56,12 @@ export class PlayerFieldState {
     });
 
     const sideCells = this.relevantSideCells;
-
     sideCells.forEach(({ x: sideCellX, y: sideCellY }) => {
       return this.playerField[sideCellX][sideCellY].setAdjoinedShip(shipId, true);
     });
   };
 
-  public unPlaceShip = (clickedCellX: number, clickedCellY: number) => {
+  public removeShip = (clickedCellX: number, clickedCellY: number) => {
     const { shipId } = this.playerField[clickedCellX][clickedCellY];
 
     if (shipId) {

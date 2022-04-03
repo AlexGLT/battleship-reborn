@@ -1,4 +1,4 @@
-import { Cell } from "../cell";
+import { Cell } from "../state-elements";
 
 export const generateBattleField = () => {
   const field: Cell[][] = [];
