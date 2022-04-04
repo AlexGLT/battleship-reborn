@@ -33,12 +33,12 @@ export class DraggingState {
     const { length } = this.shipSpecs;
 
     if (length) {
-      const { relevantSideCells, checkCollision, hoverCells } = this.shipStore.playerFieldState;
+      const { relevantRelatedCells, checkCollision, hoverCells } = this.shipStore.playerFieldState;
 
-      const isCollision = checkCollision(relevantSideCells);
-      const canDrop = relevantSideCells.length === length && !isCollision;
+      const isCollision = checkCollision(relevantRelatedCells);
+      const canDrop = relevantRelatedCells.length === length && !isCollision;
 
-      hoverCells(relevantSideCells, true, this.canDrop);
+      hoverCells(relevantRelatedCells, true, canDrop);
 
       this.canDrop = canDrop;
     }
