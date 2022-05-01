@@ -60,7 +60,7 @@ export const DraggableShip = observer((
             top: `${nodePosition.y}px`
           } : {}}
           className={shipClassNames}
-          onPointerDown={handleOnPointerDown}
+          onPointerDown={!rotateAnimationState && !dropFailAnimationState ? handleOnPointerDown : undefined}
           onAnimationEnd={handleRotateAnimationEnd}
           onTransitionEnd={handleDropFailAnimationEnd}
         >

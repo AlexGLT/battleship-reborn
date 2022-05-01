@@ -10,13 +10,13 @@ export const getSideCells = (cells: Array<CellPosition>) => {
       const sideCellX = x + i;
 
       if (sideCellX < 0) continue;
-      if (sideCellX > fieldSize.width - 1) break;
+      if (sideCellX > fieldSize.height - 1) break;
 
       for (let j = -1; j <= 1; j++) {
         const sideColumnY = y + j;
 
         if (sideColumnY < 0) continue;
-        if (sideColumnY > fieldSize.height - 1) break;
+        if (sideColumnY > fieldSize.width - 1) break;
 
         sideCellsIndexes.add(CellPosition.position2Index(sideCellX, sideColumnY));
       }

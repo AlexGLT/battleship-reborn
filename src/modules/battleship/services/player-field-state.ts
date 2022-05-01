@@ -43,16 +43,16 @@ export class PlayerFieldState {
     }, false);
   };
 
-  public hoverCells = (relatedCells: Array<CellPosition>, hover: boolean, canDrop: boolean | null) => {
+  public hoverCells = (relatedCells: Array<CellPosition>, hover: boolean) => {
     relatedCells.forEach(({ x, y }) => {
-      this.playerField[x][y].setHover(hover, canDrop);
+      this.playerField[x][y].setHover(hover);
     });
   };
 
   public placeShip = (shipId: string) => {
     const relatedCells = this.relevantRelatedCells;
-    relatedCells.forEach(({ x: relatedCellX, y: relatedCellY }) => {
-      return this.playerField[relatedCellX][relatedCellY].bindShip(shipId);
+    relatedCells.forEach(({ x: relatedCellX, y: relatedCellY }, index) => {
+      return this.playerField[relatedCellX][relatedCellY].bindShip(shipId, index);
     });
 
     const sideCells = this.relevantSideCells;
@@ -62,18 +62,20 @@ export class PlayerFieldState {
   };
 
   public removeShip = (clickedCellX: number, clickedCellY: number) => {
-    const { shipId } = this.playerField[clickedCellX][clickedCellY];
+    const { shipId, deckIndex } = this.playerField[clickedCellX][clickedCellY];
 
     if (shipId) {
-      for (let cellX = 0; cellX < 10; cellX++) {
-        for (let cellY = 0; cellY < 10; cellY++) {
-          const cell = this.playerField[cellX][cellY];
+      const { direction, length } = this.battleShipStore.getShipSpecs(shipId);
 
-          cell.adjoinedShipsIds.delete(shipId);
+      const relatedCells = getRelatedCells(clickedCellX, clickedCellY, length!, direction!, deckIndex!);
+      relatedCells.forEach(({ x: cellX, y: cellY }) => {
+        this.playerField[cellX][cellY].unbindShip();
+      });
 
-          if (cell.shipId === shipId) cell.unbindShip();
-        }
-      }
+      const sideCells = getSideCells(relatedCells);
+      sideCells.forEach(({ x: cellX, y: cellY }) => {
+        this.playerField[cellX][cellY].adjoinedShipsIds.delete(shipId);
+      });
     }
 
     return shipId;

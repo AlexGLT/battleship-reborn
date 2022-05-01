@@ -21,3 +21,9 @@ export class CellPosition extends Position {
 
   public static position2Index = (x: number, y: number) => x * 10 + y;
 }
+
+export interface CellState {
+  isHovered: boolean;
+  isBusy: boolean;
+  isAdjoined: boolean;
+}
