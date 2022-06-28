@@ -1,7 +1,7 @@
 import { useRootStore } from "../../../store/hooks";
 
 export const useBattleShipStore = () => {
-  const { battleShipStore } = useRootStore();
+    const { battleShipStore } = useRootStore();
 
-  return battleShipStore;
+    return battleShipStore;
 };

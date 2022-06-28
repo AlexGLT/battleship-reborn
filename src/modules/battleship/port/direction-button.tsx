@@ -1,7 +1,7 @@
 interface DirectionButtonProps {
-  onClick: () => void;
+    onClick: () => void;
 }
 
 export const DirectionButton = ({ onClick }: DirectionButtonProps) => (
-  <button className="port__direction-button" onClick={onClick}>Change direction</button>
+    <button className="port__direction-button" onClick={onClick}>Change direction</button>
 );

@@ -1,13 +1,13 @@
 import { BattleShipStore } from "../modules/battleship/services/store";
 
 export interface RootStoreInterface {
-  battleShipStore: BattleShipStore
+    battleShipStore: BattleShipStore;
 }
 
 export class RootStore implements RootStoreInterface {
-  public battleShipStore: BattleShipStore;
+    public battleShipStore: BattleShipStore;
 
-  constructor() {
-    this.battleShipStore = new BattleShipStore();
-  }
+    constructor() {
+        this.battleShipStore = new BattleShipStore();
+    }
 }
