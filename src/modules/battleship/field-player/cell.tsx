@@ -29,7 +29,6 @@ const getStylesByCellState = ({ isHovered, isBusy, isAdjoined }: CellState, canD
 export const Cell = observer(({ classNames, row, column }: CellProps) => {
     const {
         playerFieldState: { getCellState },
-        raiseShip,
         draggingState
     } = useBattleShipStore();
 
@@ -40,7 +39,7 @@ export const Cell = observer(({ classNames, row, column }: CellProps) => {
     const handleContextMenu = (event: MouseEvent<HTMLTableCellElement>) => {
         event.preventDefault();
 
-        if (cellState.isBusy) raiseShip(row, column);
+        if (cellState.isBusy) draggingState.raiseShip(row, column);
     };
 
     const handlePointerEnter = () => draggingState.setHoverCell(new CellPosition(row, column));

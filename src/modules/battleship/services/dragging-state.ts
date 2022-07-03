@@ -2,6 +2,7 @@ import { makeAutoObservable } from "mobx";
 
 import { BattleShipStore } from "./store";
 import { CellPosition } from "../typedefs";
+import { getRelatedCells, getSideCells } from "./utils";
 
 export class DraggingState {
     private shipStore: BattleShipStore;
@@ -27,22 +28,38 @@ export class DraggingState {
         return this.shipId ? this.shipStore.getShipSpecs(this.shipId) : {};
     }
 
+    public get currentRelatedCells(): Array<CellPosition> {
+        const { direction, length } = this.shipSpecs;
+
+        if (direction && length && this.hoveredCell && this.deckIndex !== null) {
+            return getRelatedCells(this.hoveredCell.x, this.hoveredCell.y, length, direction, this.deckIndex);
+        }
+
+        return [];
+    }
+
+    public get currentSideCells(): Array<CellPosition> {
+        const relatedCells = this.currentRelatedCells;
+
+        return relatedCells.length ? getSideCells(relatedCells) : [];
+    }
+
     private hover = () => {
         const { length } = this.shipSpecs;
 
         if (length) {
-            const { relevantRelatedCells, checkCollision, hoverCells } = this.shipStore.playerFieldState;
+            const { checkAvailability, hoverCells } = this.shipStore.playerFieldState;
 
-            this.canDrop = relevantRelatedCells.length === length && !checkCollision(relevantRelatedCells);
+            this.canDrop = checkAvailability(length, this.currentRelatedCells);
 
-            hoverCells(relevantRelatedCells, true);
+            hoverCells(true, this.currentRelatedCells);
         }
     };
 
     private unHover = () => {
-        const { relevantRelatedCells, hoverCells } = this.shipStore.playerFieldState;
+        const { hoverCells } = this.shipStore.playerFieldState;
 
-        hoverCells(relevantRelatedCells, false);
+        hoverCells(false, this.currentRelatedCells);
     };
 
     public setHoverCell = (hoverCell: CellPosition | null) => {
@@ -51,6 +68,38 @@ export class DraggingState {
         this.hoveredCell = hoverCell;
 
         if (hoverCell) this.hover();
+    };
+
+    public dropShip = () => {
+        const { shipId, hoveredCell, canDrop, currentRelatedCells, currentSideCells } = this;
+        const { moveOutShip, playerFieldState: { placeShip } } = this.shipStore;
+
+        let success = false;
+
+        if (currentRelatedCells.length && hoveredCell) {
+            if (canDrop && shipId) {
+                placeShip(shipId, currentRelatedCells, currentSideCells);
+                moveOutShip();
+
+                success = true;
+            }
+
+            this.setHoverCell(null);
+        }
+
+        this.stopDragging();
+
+        return { success };
+    };
+
+    public raiseShip = (clickedCellX: number, clickedCellY: number) => {
+        const { moveInShip, playerFieldState: { removeShip } } = this.shipStore;
+
+        const shipId = removeShip(clickedCellX, clickedCellY);
+
+        if (shipId) {
+            moveInShip(shipId);
+        }
     };
 
     public startDragging = (shipId: string, deckIndex: number) => {

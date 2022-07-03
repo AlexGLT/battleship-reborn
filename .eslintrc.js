@@ -37,6 +37,7 @@ module.exports = {
         "spaced-comment": 0,
         "operator-linebreak": 0,
         "no-unused-vars": 0,
+        "no-debugger": 0,
         "@typescript-eslint/no-unused-vars": 1,
 
         "require-jsdoc": 0,

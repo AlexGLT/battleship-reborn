@@ -9,7 +9,8 @@ export const getRelatedCells = (
     y: number,
     length: number,
     direction: directions,
-    deckIndex: number): Array<CellPosition> => {
+    deckIndex: number = 0
+): Array<CellPosition> => {
     const isHorizontal = direction === directions.horizontal;
 
     const firstDeckPlace = (isHorizontal ? y : x) - deckIndex;

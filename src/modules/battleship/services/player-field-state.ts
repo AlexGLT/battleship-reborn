@@ -17,45 +17,31 @@ export class PlayerFieldState {
         this.battleShipStore = store;
     }
 
-    public get relevantRelatedCells(): Array<CellPosition> {
-        const { shipSpecs: { length, direction }, deckIndex, hoveredCell } = this.battleShipStore.draggingState;
-
-        if (direction && length && hoveredCell && deckIndex !== null) {
-            return getRelatedCells(hoveredCell.x, hoveredCell.y, length, direction, deckIndex);
-        }
-
-        return [];
-    }
-
-    public get relevantSideCells(): Array<CellPosition> {
-        const relatedCells = this.relevantRelatedCells;
-
-        return relatedCells.length ? getSideCells(relatedCells) : [];
-    }
-
     public getCellState = (cellX: number, cellY: number) => this.playerField[cellX][cellY];
 
     public checkCollision = (relatedCells: Array<CellPosition>) => {
         return relatedCells.reduce((isCollision, { x: relatedCellX, y: relatedCellY }) => {
-            const cell = this.playerField[relatedCellX][relatedCellY];
+            const { isBusy, adjoinedShipsIds } = this.playerField[relatedCellX][relatedCellY];
 
-            return isCollision || cell.isBusy || !!cell.adjoinedShipsIds.size;
+            return isCollision || isBusy || !!adjoinedShipsIds.size;
         }, false);
     };
 
-    public hoverCells = (relatedCells: Array<CellPosition>, hover: boolean) => {
+    public checkAvailability = (length: number, relatedCells: Array<CellPosition>) => {
+        return relatedCells.length === length && !this.checkCollision(relatedCells);
+    };
+
+    public hoverCells = (hover: boolean, relatedCells: Array<CellPosition>) => {
         relatedCells.forEach(({ x, y }) => {
             this.playerField[x][y].setHover(hover);
         });
     };
 
-    public placeShip = (shipId: string) => {
-        const relatedCells = this.relevantRelatedCells;
+    public placeShip = (shipId: string, relatedCells: Array<CellPosition>, sideCells: Array<CellPosition>) => {
         relatedCells.forEach(({ x: relatedCellX, y: relatedCellY }, index) => {
             return this.playerField[relatedCellX][relatedCellY].bindShip(shipId, index);
         });
 
-        const sideCells = this.relevantSideCells;
         sideCells.forEach(({ x: sideCellX, y: sideCellY }) => {
             return this.playerField[sideCellX][sideCellY].setAdjoinedShip(shipId, true);
         });
@@ -74,7 +60,7 @@ export class PlayerFieldState {
 
             const sideCells = getSideCells(relatedCells);
             sideCells.forEach(({ x: cellX, y: cellY }) => {
-                this.playerField[cellX][cellY].adjoinedShipsIds.delete(shipId);
+                this.playerField[cellX][cellY].setAdjoinedShip(shipId, false);
             });
         }
 

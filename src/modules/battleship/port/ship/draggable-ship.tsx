@@ -21,9 +21,10 @@ interface DraggingShipProps {
     handleRotateAnimationEnd: (event: AnimationEvent) => void;
 }
 
-export const DraggableShip = observer((
-    { id, length, direction, rotateAnimationState, handleRotateAnimationEnd }: DraggingShipProps) => {
-    const { dropShip, draggingState: { isOverPlayerField } } = useBattleShipStore();
+export const DraggableShip = observer(({
+    id, length, direction, rotateAnimationState, handleRotateAnimationEnd
+}: DraggingShipProps) => {
+    const { draggingState: { isOverPlayerField, dropShip } } = useBattleShipStore();
 
     const {
         transitionEndState: dropFailAnimationState,

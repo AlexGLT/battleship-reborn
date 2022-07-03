@@ -18,12 +18,12 @@ export const getSideCells = (cells: Array<CellPosition>) => {
                 if (sideColumnY < 0) continue;
                 if (sideColumnY > fieldSize.width - 1) break;
 
-                sideCellsIndexes.add(CellPosition.position2Index(sideCellX, sideColumnY));
+                sideCellsIndexes.add(CellPosition.position2index(sideCellX, sideColumnY));
             }
         }
     });
 
-    cells.forEach(({ x, y }) => sideCellsIndexes.delete(CellPosition.position2Index(x, y)));
+    cells.forEach(([x, y]) => sideCellsIndexes.delete(CellPosition.position2index(x, y)));
 
     return Array.from(sideCellsIndexes.values()).map((cellIndex) => new CellPosition(cellIndex));
 };
