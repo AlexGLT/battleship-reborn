@@ -84,17 +84,15 @@ export class SocketController {
         });
     }
 
-    send = (
-        body: { type: RequestMessage, payload?: object },
-        resolve: (response: unknown) => void,
-        reject: (error: unknown) => void,
-    ) => {
-        const id = this.setResponseHandlers(body.type, { resolve, reject });
+    send = async (type: RequestMessage, payload?: object) => {
+        return await new Promise((resolve, reject) => {
+            const id = this.setResponseHandlers(type, { resolve, reject });
 
-        this.socket.send(JSON.stringify({
-            id,
-            type: body.type,
-            ...("payload" in body ? body.payload : null),
-        }));
+            this.socket.send(JSON.stringify({
+                id,
+                type,
+                ...(payload ? payload : null),
+            }));
+        });
     };
 }

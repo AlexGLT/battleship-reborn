@@ -67,9 +67,7 @@ export class Online {
         this.isHost = true;
 
         try {
-            const { payload: { gameId } } = yield new Promise((resolve, reject) => this.socket.send(
-                { type: RequestMessage.GAME_CREATE }, resolve, reject,
-            ));
+            const { payload: { gameId } } = yield this.socket.send(RequestMessage.GAME_CREATE);
 
             this.createGameLoading = false;
 
@@ -89,9 +87,7 @@ export class Online {
         this.joinGameLoading = true;
 
         try {
-            yield new Promise((resolve, reject) => this.socket.send(
-                { type: RequestMessage.GAME_JOIN, payload: { gameId } }, resolve, reject,
-            ));
+            yield this.socket.send(RequestMessage.GAME_JOIN, { gameId });
 
             this.proponentState.setIsJoined(true);
             this.joinGameLoading = false;
@@ -114,9 +110,7 @@ export class Online {
             ));
 
         try {
-            yield new Promise((resolve, reject) => this.socket.send(
-                { type: RequestMessage.GAME_LOAD_SHIPS, payload: { ships } }, resolve, reject,
-            ));
+            yield this.socket.send(RequestMessage.GAME_LOAD_SHIPS, { ships });
 
             this.isShipsLoaded = true;
         } catch (e) {
@@ -130,9 +124,7 @@ export class Online {
         yield this.loadShips();
 
         try {
-            yield new Promise((resolve, reject) => this.socket.send(
-                { type: RequestMessage.GAME_READY }, resolve, reject,
-            ));
+            yield this.socket.send(RequestMessage.GAME_READY);
 
             this.proponentState.isReady = true;
         } catch (e) {
@@ -148,9 +140,7 @@ export class Online {
         yield this.loadShips();
 
         try {
-            yield new Promise((resolve, reject) => this.socket.send(
-                { type: RequestMessage.GAME_START }, resolve, reject,
-            ));
+            yield this.socket.send(RequestMessage.GAME_START);
 
             this.onGameStarted();
         } catch (e) {
@@ -160,11 +150,10 @@ export class Online {
 
     * shoot(cellX: number, cellY: number) {
         try {
-            const { payload: { result } } = yield new Promise((resolve, reject) => this.socket.send(
-                { type: RequestMessage.GAME_SHOOT, payload: { target: { x: cellX, y: cellY } } },
-                resolve,
-                reject,
-            ));
+            const { payload: { result } } = yield this.socket.send(
+                RequestMessage.GAME_SHOOT,
+                { target: { x: cellX, y: cellY } },
+            );
 
             this.rootStore.opponentField.shot(cellX, cellY, result);
         } catch (e) {
