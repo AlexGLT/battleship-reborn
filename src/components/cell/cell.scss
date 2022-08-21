@@ -1,0 +1,42 @@
+.cell {
+    transition: 0.4s;
+
+    &_hovered {
+        transform: scale(1.2);
+    }
+
+    &_can-drop {
+        transform: scale(1.2);
+        background-color: #9ec5fe;
+    }
+
+    &_cant-drop {
+        transform: scale(1.2);
+        background-color: #ea868f;
+    }
+
+    &_collision {
+        transform: scale(1.2);
+        background-color: #dc3545;
+    }
+
+    &_busy {
+        background-color: #6ea8fe;
+    }
+
+    &_side {
+        background-color: lighten(#cfe2ff, 5%);
+    }
+
+    &_shot-miss {
+        background-color: gainsboro;
+    }
+
+    &_shot-hit {
+        background-color: #ea868f;
+    }
+
+    &_killed {
+        background-color: darken(#ea868f, 5%);
+    }
+}

@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { configure } from "mobx";
 
-import { StoreContext } from "./store/context";
-import { RootStore } from "./store/store";
+import { StoreContext } from "./store";
+import { RootStore } from "./store";
 
 import { Main } from "./main";
-import { Battleship } from "./modules";
+import { Home, Lobby } from "./pages";
 
 configure({ enforceActions: "observed" });
 
@@ -16,7 +16,8 @@ const App = () => (
         <Router>
             <Routes>
                 <Route path="/" element={<Main />}>
-                    <Route index element={<Battleship />} />
+                    <Route index element={<Home />} />
+                    <Route path="/:gameId" element={<Lobby />} />
                 </Route>
             </Routes>
         </Router>

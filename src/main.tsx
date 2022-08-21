@@ -1,14 +1,22 @@
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
+import { observer } from "mobx-react-lite";
+import { useRootStore } from "/store";
 
 import "./main.scss";
 
-export const Main = () => (
-    <>
-        <header className={"header"}>
-            Battleship!
-        </header>
-        <main className={"main"}>
-            <Outlet />
-        </main>
-    </>
-);
+export const Main = observer(() => {
+    const { onlineController: { proponentState: { isConnected } } } = useRootStore();
+
+    return (
+        <>
+            <header className={"header"}>
+                <Link to="/">Battleship!</Link>
+            </header>
+            {isConnected ? (
+                <main className={"main"}>
+                    <Outlet />
+                </main>
+            ) : "Loading..."}
+        </>
+    );
+});
