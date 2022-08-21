@@ -1,7 +1,7 @@
 {
   "name": "battleship-reborn",
   "version": "0.1.0",
-  "homepage": "https://alexglt.github.io/react-gh-pages",
+  "homepage": "https://alexglt.github.io/battleship-reborn",
   "private": true,
   "confif-overrides-path": "./config-overrides.js",
   "scripts": {
