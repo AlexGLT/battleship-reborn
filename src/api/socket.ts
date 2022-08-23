@@ -7,92 +7,57 @@ import {
     requestResponseMap,
 } from "/constants";
 
-type SocketAndSubscribeResponseEventHandlers =
-    Record<SocketMessage | SubscribeResponseMessage, (payload?: unknown) => void>;
-
-type PublishResponseEventHandlers = Record<PublishResponseMessage, {
-    [id: string]: {
-        resolve: (response: any) => void,
-        reject?: (error: unknown) => void,
-    }
-}>;
-
-const isPublishResponseType = (
-    type: PublishResponseMessage | SubscribeResponseMessage,
-): type is PublishResponseMessage => (
-    Object.values(PublishResponseMessage).includes(type as PublishResponseMessage)
-);
-
-const isSubscribeResponseType = (
-    type: PublishResponseMessage | SubscribeResponseMessage,
-): type is SubscribeResponseMessage => (
-    Object.values(SubscribeResponseMessage).includes(type as SubscribeResponseMessage)
-);
+import type {
+    SocketMessageHandlers, PublishResponseMessagesHandlers, SubscribeResponseMessageHandlers,
+} from "./typedef";
 
 export class SocketController {
     private socket: WebSocket;
-    private publishResponseEventsHandlers: PublishResponseEventHandlers = {
-        [PublishResponseMessage.GAME_CREATED]: {},
-        [PublishResponseMessage.GAME_JOINED]: {},
-        [PublishResponseMessage.GAME_READY]: {},
-        [PublishResponseMessage.GAME_SHIPS_LOADED]: {},
-        [PublishResponseMessage.GAME_STARTED]: {},
-        [PublishResponseMessage.GAME_SHOOT_RESULT]: {},
-    } as const;
+    private publishResponseMessagesHandlers: PublishResponseMessagesHandlers = {};
 
-    private setResponseHandlers = (
-        type: RequestMessage,
-        callbacks: { resolve: (response: any) => void, reject: (error: unknown) => void },
-    ) => {
-        const id = uuid();
-        this.publishResponseEventsHandlers[requestResponseMap[type]][id] = callbacks;
+    constructor(messageHandlers: {
+        socketMessagesHandlers: SocketMessageHandlers,
+        subscribeResponseMessagesHandlers: SubscribeResponseMessageHandlers
+    }) {
+        const { socketMessagesHandlers, subscribeResponseMessagesHandlers } = messageHandlers;
 
-        return id;
-    };
-
-    private getResponseHandlers = (type: PublishResponseMessage, id?: string) => {
-        // const { id, ...payload } = rest;
-        // const callbacks = this.publishResponseEventsHandlers[type][id];
-
-        const [entryId, callbacks] = Object.entries(this.publishResponseEventsHandlers[type])[0];
-        delete this.publishResponseEventsHandlers[type][entryId];
-
-        return callbacks;
-    };
-
-    constructor(nonPublishResponseMessagesHandlers: SocketAndSubscribeResponseEventHandlers) {
         this.socket = new WebSocket("wss://battleship-reborn.herokuapp.com/ws");
 
         this.socket.addEventListener("open", () => {
             console.log("Successfully connect!");
-            nonPublishResponseMessagesHandlers[SocketMessage.SOCKET_CONNECTED]();
+            socketMessagesHandlers[SocketMessage.SOCKET_CONNECTED]();
         });
 
         this.socket.addEventListener("error", () => {
             console.log("Error!");
-            nonPublishResponseMessagesHandlers[SocketMessage.SOCKET_ERRORED]();
+            socketMessagesHandlers[SocketMessage.SOCKET_ERRORED]();
         });
 
         this.socket.addEventListener("message", (event: MessageEvent) => {
-            const { type, ...payload } = JSON.parse(event.data);
+            const { id, type, payload } = JSON.parse(event.data);
 
-            if (isPublishResponseType(type)) {
-                this.getResponseHandlers(type).resolve({ payload });
-            } else if (isSubscribeResponseType(type)) {
-                nonPublishResponseMessagesHandlers[type](payload);
+            if (Object.values(SubscribeResponseMessage).includes(type)) {
+                subscribeResponseMessagesHandlers[type as SubscribeResponseMessage](payload);
+            } else if (Object.values(PublishResponseMessage).includes(type)) {
+                const handler = this.publishResponseMessagesHandlers[id];
+
+                if (handler) {
+                    if (type === PublishResponseMessage.GAME_ERROR) {
+                        handler.reject(new Error("You break something!"));
+                    } else {
+                        handler.resolve(payload);
+                    }
+                }
             }
         });
     }
 
     send = async (type: RequestMessage, payload?: object) => {
         return await new Promise((resolve, reject) => {
-            const id = this.setResponseHandlers(type, { resolve, reject });
+            const id = uuid();
+            this.publishResponseMessagesHandlers[id] = { resolve, reject, type: requestResponseMap[type] };
 
-            this.socket.send(JSON.stringify({
-                id,
-                type,
-                ...(payload ? payload : null),
-            }));
+            this.socket.send(JSON.stringify({ id, type, ...(payload ? { payload } : null) }));
         });
     };
 }

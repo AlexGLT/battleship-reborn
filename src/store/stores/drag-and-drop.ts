@@ -53,8 +53,6 @@ export class DragAndDropController {
 
             this.canDrop = checkAvailability(length, this.currentRelatedCells);
 
-            console.log(this.currentRelatedCells);
-
             hoverCells(true, this.canDrop, this.currentRelatedCells);
         }
     };

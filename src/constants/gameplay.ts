@@ -10,8 +10,8 @@ export const shipLengthsAndCounts = {
     1: 4,
 } as const;
 
-export enum shootResults {
-    hit,
-    miss,
-    kill,
+export enum ShootResult {
+    hit = "hit",
+    miss = "miss",
+    kill = "kill",
 }

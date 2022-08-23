@@ -4,7 +4,7 @@ import { makeAutoObservable } from "mobx";
 import { RootStore } from "../root-store";
 import { generateBattleField } from "./utils";
 import { OpponentCell } from "./entities";
-import { shootResults } from "/constants";
+import { ShootResult } from "/constants";
 
 export class OpponentField {
     private rootStore: RootStore;
@@ -19,7 +19,7 @@ export class OpponentField {
 
     public getCellState = (cellX: number, cellY: number) => this.playerField[cellX][cellY];
 
-    public shot = (cellX: number, cellY: number, result: shootResults) => {
+    public shot = (cellX: number, cellY: number, result: ShootResult) => {
         this.playerField[cellX][cellY].shot(result);
     };
 }

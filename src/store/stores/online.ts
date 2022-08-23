@@ -67,7 +67,7 @@ export class Online {
         this.isHost = true;
 
         try {
-            const { payload: { gameId } } = yield this.socket.send(RequestMessage.GAME_CREATE);
+            const { gameId } = yield this.socket.send(RequestMessage.GAME_CREATE);
 
             this.createGameLoading = false;
 
@@ -150,7 +150,7 @@ export class Online {
 
     * shoot(cellX: number, cellY: number) {
         try {
-            const { payload: { result } } = yield this.socket.send(
+            const { result } = yield this.socket.send(
                 RequestMessage.GAME_SHOOT,
                 { target: { x: cellX, y: cellY } },
             );
@@ -170,13 +170,17 @@ export class Online {
 
         this.rootStore = store;
         this.socket = new SocketController({
-            [SocketMessage.SOCKET_CONNECTED]: this.proponentState.onConnect,
-            [SocketMessage.SOCKET_ERRORED]: this.proponentState.onError,
-            [SubscribeResponseMessage.GAME_OPPONENT_JOINED]: this.opponentState.onJoin,
-            [SubscribeResponseMessage.GAME_OPPONENT_READY]: this.opponentState.onReady,
-            [SubscribeResponseMessage.GAME_OPPONENT_LEFT]: this.opponentState.onLeave,
-            [SubscribeResponseMessage.GAME_STARTED]: this.onGameStarted,
-            [SubscribeResponseMessage.GAME_SHOOT]: this.onShoot,
+            socketMessagesHandlers: {
+                [SocketMessage.SOCKET_CONNECTED]: this.proponentState.onConnect,
+                [SocketMessage.SOCKET_ERRORED]: this.proponentState.onError,
+            },
+            subscribeResponseMessagesHandlers: {
+                [SubscribeResponseMessage.GAME_OPPONENT_JOINED]: this.opponentState.onJoin,
+                [SubscribeResponseMessage.GAME_OPPONENT_READY]: this.opponentState.onReady,
+                [SubscribeResponseMessage.GAME_OPPONENT_LEFT]: this.opponentState.onLeave,
+                [SubscribeResponseMessage.GAME_STARTED]: this.onGameStarted,
+                [SubscribeResponseMessage.GAME_SHOOT]: this.onShoot,
+            },
         });
     }
 }

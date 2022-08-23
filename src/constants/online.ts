@@ -20,6 +20,7 @@ export enum PublishResponseMessage {
     GAME_SHIPS_LOADED = "game/ships-loaded",
     GAME_STARTED = "game/start-ok",
     GAME_SHOOT_RESULT = "game/shoot-result",
+    GAME_ERROR = "game/error",
 }
 
 export enum SubscribeResponseMessage {
@@ -37,13 +38,4 @@ export const requestResponseMap: Record<RequestMessage, PublishResponseMessage> 
     [RequestMessage.GAME_READY]: PublishResponseMessage.GAME_READY,
     [RequestMessage.GAME_START]: PublishResponseMessage.GAME_STARTED,
     [RequestMessage.GAME_SHOOT]: PublishResponseMessage.GAME_SHOOT_RESULT,
-} as const;
-
-export const responseRequestMap: Record<PublishResponseMessage, RequestMessage> = {
-    [PublishResponseMessage.GAME_CREATED]: RequestMessage.GAME_CREATE,
-    [PublishResponseMessage.GAME_JOINED]: RequestMessage.GAME_JOIN,
-    [PublishResponseMessage.GAME_SHIPS_LOADED]: RequestMessage.GAME_LOAD_SHIPS,
-    [PublishResponseMessage.GAME_READY]: RequestMessage.GAME_READY,
-    [PublishResponseMessage.GAME_STARTED]: RequestMessage.GAME_START,
-    [PublishResponseMessage.GAME_SHOOT_RESULT]: RequestMessage.GAME_SHOOT,
 } as const;

@@ -14,8 +14,6 @@ export interface ShipProps {
 }
 
 export const Ship = ({ className, length, direction = Direction.horizontal }: ShipProps) => {
-    console.log(direction);
-
     return (
         <div className={clsx("ship", `ship_${shipDirection[direction]}`, className)}>
             {range(length).map((_, index) => <Deck key={index} />)}

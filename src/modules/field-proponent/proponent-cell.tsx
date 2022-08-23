@@ -22,8 +22,6 @@ export const ProponentCell = observer(({ row, column }: CellProps) => {
 
     const { status, isBusy } = getCellState(row, column);
 
-    console.log(row, column, status);
-
     const handleRightClick = useCallback((event: MouseEvent<HTMLTableCellElement>) => {
         event.preventDefault();
 
